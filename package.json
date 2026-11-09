@@ -1,0 +1,1 @@
+{"name":"master-foods","private":true,"scripts":{"install:all":"npm i && npm i --prefix server && npm i --prefix client","dev":"concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\""},"devDependencies":{"concurrently":"^8.2.2"}}

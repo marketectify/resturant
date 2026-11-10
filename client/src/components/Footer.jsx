@@ -16,6 +16,7 @@ export default function Footer() {
         <div>
           <p><a href={BIZ.map} target="_blank" rel="noreferrer">Open in Google Maps</a></p>
           <p><a href="#/book">Book a table</a></p>
+          <p><a href="#/track">Track your order</a></p>
           <p><a href="#/admin">Admin</a></p>
         </div>
       </div>

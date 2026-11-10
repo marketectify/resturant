@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HttpError, clean, normalizeOrderType, normalizePhone, priceOrder } from './lib.js';
+import { HttpError, clean, findOrderForTracking, normalizeOrderType, normalizePhone, priceOrder } from './lib.js';
 
 const menu = [
   { _id: '1', name: 'Chicken Tikka Chest', price: 540 },
@@ -46,6 +46,16 @@ test('a pickup order has no delivery fee', () => {
   const r = priceOrder([{ id: '1', qty: 2 }], menu, 0);
   assert.equal(r.deliveryFee, 0);
   assert.equal(r.total, 1080);
+});
+
+test('findOrderForTracking needs the order number and a matching phone', () => {
+  const orders = [{ orderNo: 'MF-ABC12', phone: '03001234567', altPhone: '03111234567', status: 'new' }];
+  assert.equal(findOrderForTracking(orders, 'mf-abc12', '0300-1234567'), orders[0]);
+  assert.equal(findOrderForTracking(orders, 'MF-ABC12', '+92 311 1234567'), orders[0]);
+  assert.equal(findOrderForTracking(orders, 'MF-ABC12', '03009999999'), null);
+  assert.equal(findOrderForTracking(orders, 'MF-NOPE', '03001234567'), null);
+  assert.equal(findOrderForTracking(orders, '', ''), null);
+  assert.equal(findOrderForTracking(orders, undefined, undefined), null);
 });
 
 test('clean', () => {

@@ -3,6 +3,7 @@ import { StoreProvider } from './store.jsx';
 import MenuPage from './pages/MenuPage.jsx';
 import Checkout from './pages/Checkout.jsx';
 import Booking from './pages/Booking.jsx';
+import Track from './pages/Track.jsx';
 import Admin from './pages/Admin.jsx';
 import CartDrawer from './components/CartDrawer.jsx';
 import SearchModal from './components/SearchModal.jsx';
@@ -23,7 +24,7 @@ function useRoute() {
 export default function App() {
   const r = useRoute();
   if (r === '/admin') return <Admin />;
-  const Page = r === '/checkout' ? Checkout : r === '/book' ? Booking : MenuPage;
+  const Page = r === '/checkout' ? Checkout : r === '/book' ? Booking : r === '/track' ? Track : MenuPage;
   return (
     <StoreProvider>
       <Page />

@@ -8,7 +8,40 @@ import { api } from '../api.js';
 import { AREAS, BIZ, rs } from '../config.js';
 
 const okPhone = v => /^(0|92)3\d{9}$/.test(v.replace(/\D/g, '')); // same rule as the server: 03xx-xxxxxxx or +92 3xx xxxxxxx
+const SAVED_KEY = 'mf-customer';
+const REMEMBER = ['title', 'name', 'phone', 'altPhone', 'address', 'area', 'landmark', 'email'];
 const EMPTY = { title: 'Mr.', name: '', phone: '', altPhone: '', address: '', area: AREAS[0], landmark: '', email: '', instructions: '' };
+
+// Details are only kept in this browser (localStorage), and only if the customer leaves the box ticked.
+function loadSaved() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SAVED_KEY) || 'null');
+    if (!s || typeof s !== 'object') return EMPTY;
+    const out = { ...EMPTY };
+    for (const k of REMEMBER) if (typeof s[k] === 'string') out[k] = s[k];
+    if (!AREAS.includes(out.area)) out.area = AREAS[0];
+    return out;
+  } catch { return EMPTY; }
+}
+function saveCustomer(f, remember) {
+  try {
+    if (!remember) return localStorage.removeItem(SAVED_KEY);
+    localStorage.setItem(SAVED_KEY, JSON.stringify(Object.fromEntries(REMEMBER.map(k => [k, f[k]]))));
+  } catch { /* storage unavailable: nothing to do */ }
+}
+
+function waLink(done) {
+  const lines = done.items.map(i => `${i.qty} x ${i.name} - ${rs(i.price * i.qty)}`);
+  const text = [
+    `Assalam o Alaikum, I placed order ${done.orderNo} (${done.orderType === 'pickup' ? 'Pickup' : 'Delivery'}).`,
+    ...lines,
+    `Total: ${rs(done.total)}`,
+    `Name: ${done.name}`,
+    `Phone: ${done.phone}`,
+    ...(done.orderType === 'pickup' ? [] : [`Address: ${done.address}`]),
+  ].join('\n');
+  return `https://wa.me/${BIZ.whatsapp}?text=${encodeURIComponent(text)}`;
+}
 
 function validate(f, pickup) {
   const e = {};
@@ -38,7 +71,11 @@ function Done({ done }) {
         </ul>
         <p className="muted">We will call you on {done.phone} to confirm your order.</p>
         {done.demo && <p className="demo-note">Demo mode: the server is not connected, so this order was not actually sent.</p>}
-        <a className="btn-primary slim" href="#/">Back to menu</a>
+        <div className="done-actions">
+          <a className="btn-wa" href={waLink(done)} target="_blank" rel="noreferrer"><Icon name="whatsapp" size={22} stroke={1.8} /> Send order on WhatsApp</a>
+          {!done.demo && <a className="btn-ghost" href={`#/track?no=${encodeURIComponent(done.orderNo)}&phone=${encodeURIComponent(done.phone)}`}>Track order</a>}
+          <a className="btn-primary slim" href="#/">Back to menu</a>
+        </div>
       </section>
     </div>
   );
@@ -47,7 +84,8 @@ function Done({ done }) {
 export default function Checkout() {
   const { lines, count, total, fee, orderType, setOrderType, clear } = useStore();
   const pickup = orderType === 'pickup';
-  const [f, setF] = useState(EMPTY);
+  const [f, setF] = useState(loadSaved);
+  const [remember, setRemember] = useState(true);
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -67,13 +105,15 @@ export default function Checkout() {
     setBusy(true);
     try {
       const r = await api('/api/orders', { method: 'POST', body: { ...f, orderType, payment: 'cod', items: lines.map(l => ({ id: l.id, qty: l.qty })) } });
+      saveCustomer(f, remember);
       clear();
-      setDone({ orderNo: r.orderNo, orderType: r.orderType, items: r.items, fee: r.deliveryFee, total: r.total, phone: f.phone.trim() });
+      setDone({ orderNo: r.orderNo, orderType: r.orderType, items: r.items, fee: r.deliveryFee, total: r.total, name: f.name.trim(), phone: f.phone.trim(), address: f.address.trim() });
     } catch (er) {
       if (er.offline) { // API not reachable (static demo hosting): finish the flow in demo mode
         const items = lines.map(l => ({ menuId: l.id, name: l.name, price: l.price, qty: l.qty }));
+        saveCustomer(f, remember);
         clear();
-        setDone({ orderNo: 'DEMO-' + Date.now().toString(36).toUpperCase().slice(-4), orderType, items, fee, total, phone: f.phone.trim(), demo: true });
+        setDone({ orderNo: 'DEMO-' + Date.now().toString(36).toUpperCase().slice(-4), orderType, items, fee, total, name: f.name.trim(), phone: f.phone.trim(), address: f.address.trim(), demo: true });
       } else setError(er.message);
     } finally { setBusy(false); }
   };
@@ -183,6 +223,11 @@ export default function Checkout() {
                 </div>
               </div>
             </div>
+
+            <label className="remember">
+              <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)} />
+              <span>Remember my details on this device for next time</span>
+            </label>
           </section>
 
           <aside className="panel side">

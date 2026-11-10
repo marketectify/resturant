@@ -6,7 +6,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { HttpError, ORDER_STATUSES, BOOKING_STATUSES, clean, normalizeOrderType, normalizePhone, priceOrder } from './lib.js';
+import { HttpError, ORDER_STATUSES, BOOKING_STATUSES, clean, findOrderForTracking, normalizeOrderType, normalizePhone, priceOrder } from './lib.js';
 
 const PORT = process.env.PORT || 5000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'master123';
@@ -76,6 +76,21 @@ const auth = (q, s, n) => {
 // ---------- Public API ----------
 app.get('/api/settings', (_q, s) => s.json({ deliveryFee: DELIVERY_FEE }));
 app.get('/api/menu', ah(async (_q, s) => s.json(await db.list('menu'))));
+
+// Order tracking: at most 20 lookups per minute per IP (a wrong guess still costs one).
+const trackHits = new Map(); // ip -> { n, reset }
+app.get('/api/orders/track', ah(async (q, s) => {
+  const now = Date.now();
+  const h = trackHits.get(q.ip);
+  if (!h || h.reset < now) trackHits.set(q.ip, { n: 1, reset: now + 60_000 });
+  else if (++h.n > 20) throw new HttpError(429, 'Too many lookups, please try again in a minute');
+  const o = findOrderForTracking(await db.list('orders'), q.query.orderNo, q.query.phone);
+  if (!o) throw new HttpError(404, 'We could not find an order with those details');
+  s.json({
+    orderNo: o.orderNo, orderType: o.orderType || 'delivery', status: o.status, createdAt: o.createdAt,
+    items: o.items, subtotal: o.subtotal, deliveryFee: o.deliveryFee, total: o.total,
+  });
+}));
 
 app.post('/api/orders', ah(async (q, s) => {
   const b = q.body ?? {};

@@ -24,6 +24,17 @@ export function normalizePhone(v) {
 }
 
 /**
+ * Finds the order a customer is asking about. Both the order number and the phone
+ * number used when ordering must match, so order numbers cannot be browsed.
+ */
+export function findOrderForTracking(orders, orderNo, phone) {
+  const no = clean(orderNo, 30).toUpperCase();
+  const p = normalizePhone(phone);
+  if (!no || !p) return null;
+  return orders.find(o => String(o.orderNo).toUpperCase() === no && [o.phone, o.altPhone].some(x => normalizePhone(x) === p)) ?? null;
+}
+
+/**
  * Prices an order from the menu stored on the server. Prices sent by the
  * browser are never trusted: only item ids and quantities are read.
  */

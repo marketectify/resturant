@@ -14,7 +14,8 @@ Online ordering demo for a Karachi restaurant: category menu, cart drawer, check
 | Route | What |
 | --- | --- |
 | `#/` | Menu with sticky category pills, search, cart drawer |
-| `#/checkout` | Delivery / Pickup toggle, order form (mobile number format `03xx-xxxxxxx`), cash payment, order confirmation with item list |
+| `#/checkout` | Delivery / Pickup toggle, order form (mobile number format `03xx-xxxxxxx`), cash payment, "remember my details" (stored only in the customer's browser), order confirmation with item list, "Send order on WhatsApp" button |
+| `#/track` | Order tracking: order number + the mobile number used for the order, shows a progress timeline |
 | `#/book` | Table booking |
 | `#/admin` | Orders (with status), bookings and menu management |
 
@@ -41,4 +42,4 @@ Set `ADMIN_PASSWORD` and `MONGO_URI` in the server environment. If your host set
 
 ## Tests
 
-`npm test` runs the order pricing, order type and validation tests.
+`npm test` runs the order pricing, order type, order tracking lookup and validation tests.

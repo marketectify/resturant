@@ -1,40 +1,166 @@
-import express from 'express'; import mongoose from 'mongoose'; import cors from 'cors'; import crypto from 'crypto'; import 'dotenv/config';
-const app = express(); app.use(cors(), express.json());
-const Menu = mongoose.model('Menu', new mongoose.Schema({ name: String, desc: String, price: Number, cat: String, emoji: String }));
+import 'dotenv/config';
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { HttpError, ORDER_STATUSES, BOOKING_STATUSES, clean, normalizePhone, priceOrder } from './lib.js';
+
+const PORT = process.env.PORT || 5000;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'master123';
+const feeFromEnv = Number(process.env.DELIVERY_FEE);
+const DELIVERY_FEE = process.env.DELIVERY_FEE && Number.isFinite(feeFromEnv) && feeFromEnv >= 0 ? feeFromEnv : 180;
+if (!process.env.ADMIN_PASSWORD) console.warn('ADMIN_PASSWORD not set: using the default "master123". Set it in server/.env before going live.');
+
+const app = express();
+app.use(cors(), express.json({ limit: '50kb' }));
+
+// ---------- Data layer ----------
+// Uses MongoDB when it is reachable, otherwise falls back to in-memory demo data (resets on restart).
+const SEED_MENU = JSON.parse(fs.readFileSync(new URL('../shared/menu.json', import.meta.url), 'utf8'));
+
+const Menu = mongoose.model('Menu', new mongoose.Schema({ name: String, desc: String, price: Number, cat: String, emoji: String, badge: String, img: String }));
 const Booking = mongoose.model('Booking', new mongoose.Schema({ name: String, phone: String, date: String, time: String, guests: Number, note: String, status: { type: String, default: 'pending' } }, { timestamps: true }));
-// Works with MongoDB if available, otherwise falls back to in-memory demo data (resets on restart)
-let useMongo = false, nid = 1; const mem = { menu: [], bookings: [] }; const M = { menu: Menu, bookings: Booking };
+const Order = mongoose.model('Order', new mongoose.Schema({
+  orderNo: String, title: String, name: String, phone: String, altPhone: String, email: String,
+  area: String, address: String, landmark: String, instructions: String,
+  items: [{ _id: false, menuId: String, name: String, price: Number, qty: Number }],
+  subtotal: Number, deliveryFee: Number, total: Number,
+  status: { type: String, default: 'new' },
+}, { timestamps: true }));
+
+let useMongo = false;
+let nextId = 1;
+const models = { menu: Menu, bookings: Booking, orders: Order };
+const mem = { menu: [], bookings: [], orders: [] };
+mem.menu = SEED_MENU.map(d => ({ ...d, _id: String(nextId++) }));
+
 const db = {
-  list: async k => useMongo ? M[k].find().sort(k === 'menu' ? '' : '-createdAt') : (k === 'menu' ? [...mem.menu] : [...mem.bookings].reverse()),
-  add: async (k, d) => { if (useMongo) return M[k].create(d); const o = { ...d, _id: String(nid++), createdAt: new Date(), ...(k === 'bookings' && { status: 'pending' }) }; mem[k].push(o); return o; },
-  set: async (k, i, p) => { if (useMongo) return M[k].findByIdAndUpdate(i, p, { new: true }); const o = mem[k].find(x => x._id === i); o && Object.assign(o, p); return o; },
-  del: async (k, i) => { if (useMongo) return M[k].findByIdAndDelete(i); mem[k] = mem[k].filter(x => x._id !== i); return { ok: 1 }; },
+  list: async k => useMongo
+    ? models[k].find().sort(k === 'menu' ? { _id: 1 } : { createdAt: -1 }).lean()
+    : (k === 'menu' ? [...mem.menu] : [...mem[k]].reverse()),
+  add: async (k, d) => {
+    if (useMongo) return (await models[k].create(d)).toObject();
+    const o = { ...d, _id: String(nextId++), createdAt: new Date() };
+    mem[k].push(o);
+    return o;
+  },
+  set: async (k, id, patch) => {
+    if (useMongo) return models[k].findByIdAndUpdate(id, patch, { new: true, runValidators: true }).lean();
+    const o = mem[k].find(x => x._id === id);
+    if (o) Object.assign(o, patch);
+    return o;
+  },
+  del: async (k, id) => {
+    if (useMongo) return models[k].findByIdAndDelete(id);
+    const before = mem[k].length;
+    mem[k] = mem[k].filter(x => x._id !== id);
+    return before !== mem[k].length ? { ok: 1 } : null;
+  },
 };
-const tokens = new Set();
-const auth = (q, s, n) => tokens.has(q.headers['x-token']) ? n() : s.status(401).json({ error: 'Unauthorized' });
+
+// ---------- Helpers ----------
+const ah = fn => (q, s, n) => Promise.resolve(fn(q, s, n)).catch(n); // forward async errors to the error handler
+const found = o => { if (!o) throw new HttpError(404, 'Not found'); return o; };
+
+const TOKEN_TTL = 12 * 60 * 60 * 1000;
+const tokens = new Map(); // token -> expiry timestamp
+const auth = (q, s, n) => {
+  const exp = tokens.get(q.headers['x-token']);
+  if (exp && exp > Date.now()) return n();
+  s.status(401).json({ error: 'Unauthorized' });
+};
+
+// ---------- Public API ----------
+app.get('/api/settings', (_q, s) => s.json({ deliveryFee: DELIVERY_FEE }));
+app.get('/api/menu', ah(async (_q, s) => s.json(await db.list('menu'))));
+
+app.post('/api/orders', ah(async (q, s) => {
+  const b = q.body ?? {};
+  const name = clean(b.name, 80);
+  const phone = normalizePhone(b.phone);
+  const address = clean(b.address, 300);
+  const altRaw = clean(b.altPhone, 20);
+  const altPhone = altRaw ? normalizePhone(altRaw) : '';
+  if (!name) throw new HttpError(400, 'Please enter your full name');
+  if (!phone) throw new HttpError(400, 'Please enter a valid mobile number (03xx-xxxxxxx)');
+  if (altRaw && !altPhone) throw new HttpError(400, 'Alternate mobile number is not valid');
+  if (!address) throw new HttpError(400, 'Please enter your delivery address');
+
+  const priced = priceOrder(b.items, await db.list('menu'), DELIVERY_FEE);
+  const order = await db.add('orders', {
+    orderNo: 'MF-' + Date.now().toString(36).toUpperCase().slice(-5),
+    title: clean(b.title, 10), name, phone, altPhone, email: clean(b.email, 120),
+    area: clean(b.area, 80), address, landmark: clean(b.landmark, 120), instructions: clean(b.instructions, 300),
+    ...priced, status: 'new',
+  });
+  s.status(201).json({ orderNo: order.orderNo, subtotal: order.subtotal, deliveryFee: order.deliveryFee, total: order.total });
+}));
+
+app.post('/api/bookings', ah(async (q, s) => {
+  const b = q.body ?? {};
+  const name = clean(b.name, 80);
+  const phone = normalizePhone(b.phone);
+  const date = clean(b.date, 10);
+  const time = clean(b.time, 5);
+  const guests = Number(b.guests);
+  if (!name || !phone || !date || !time || !Number.isInteger(guests) || guests < 1 || guests > 50) {
+    throw new HttpError(400, 'Please fill all required fields (mobile format: 03xx-xxxxxxx)');
+  }
+  s.status(201).json(await db.add('bookings', { name, phone, date, time, guests, note: clean(b.note, 300), status: 'pending' }));
+}));
+
+// ---------- Admin API ----------
 app.post('/api/login', (q, s) => {
-  if (q.body.password !== (process.env.ADMIN_PASSWORD || 'master123')) return s.status(401).json({ error: 'Wrong password' });
-  const t = crypto.randomUUID(); tokens.add(t); s.json({ token: t });
+  if (q.body?.password !== ADMIN_PASSWORD) return s.status(401).json({ error: 'Wrong password' });
+  const t = crypto.randomUUID();
+  tokens.set(t, Date.now() + TOKEN_TTL);
+  s.json({ token: t });
 });
-app.get('/api/menu', async (_, s) => s.json(await db.list('menu')));
-app.post('/api/bookings', async (q, s) => {
-  const { name, phone, date, time, guests } = q.body;
-  if (!name || !phone || !date || !time || !guests) return s.status(400).json({ error: 'Please fill all required fields' });
-  s.json(await db.add('bookings', q.body));
+
+app.get('/api/admin/orders', auth, ah(async (_q, s) => s.json(await db.list('orders'))));
+app.patch('/api/admin/orders/:id', auth, ah(async (q, s) => {
+  if (!ORDER_STATUSES.includes(q.body?.status)) throw new HttpError(400, 'Invalid status');
+  s.json(found(await db.set('orders', q.params.id, { status: q.body.status })));
+}));
+app.delete('/api/admin/orders/:id', auth, ah(async (q, s) => s.json(found(await db.del('orders', q.params.id)))));
+
+app.get('/api/admin/bookings', auth, ah(async (_q, s) => s.json(await db.list('bookings'))));
+app.patch('/api/admin/bookings/:id', auth, ah(async (q, s) => {
+  if (!BOOKING_STATUSES.includes(q.body?.status)) throw new HttpError(400, 'Invalid status');
+  s.json(found(await db.set('bookings', q.params.id, { status: q.body.status })));
+}));
+app.delete('/api/admin/bookings/:id', auth, ah(async (q, s) => s.json(found(await db.del('bookings', q.params.id)))));
+
+app.post('/api/admin/menu', auth, ah(async (q, s) => {
+  const b = q.body ?? {};
+  const item = { name: clean(b.name, 80), desc: clean(b.desc, 120), price: Number(b.price), cat: clean(b.cat, 40), emoji: clean(b.emoji, 8), badge: clean(b.badge, 30), img: clean(b.img, 500) };
+  if (!item.name || !item.cat || !Number.isFinite(item.price) || item.price < 0) throw new HttpError(400, 'Name, category and a valid price are required');
+  s.status(201).json(await db.add('menu', item));
+}));
+app.delete('/api/admin/menu/:id', auth, ah(async (q, s) => s.json(found(await db.del('menu', q.params.id)))));
+
+// ---------- Serve the built client (after `npm run build`) ----------
+const dist = fileURLToPath(new URL('../client/dist', import.meta.url));
+if (fs.existsSync(dist)) {
+  app.use(express.static(dist));
+  app.get(/^\/(?!api\/).*/, (_q, s) => s.sendFile(path.join(dist, 'index.html')));
+}
+
+// ---------- Errors ----------
+app.use((err, _q, s, _n) => {
+  if (err instanceof HttpError) return s.status(err.status).json({ error: err.message });
+  if (err?.type === 'entity.parse.failed') return s.status(400).json({ error: 'Invalid JSON' });
+  if (err?.name === 'CastError' || err?.name === 'ValidationError') return s.status(400).json({ error: 'Invalid data' });
+  console.error(err);
+  s.status(500).json({ error: 'Something went wrong' });
 });
-app.get('/api/admin/bookings', auth, async (_, s) => s.json(await db.list('bookings')));
-app.patch('/api/admin/bookings/:id', auth, async (q, s) => s.json(await db.set('bookings', q.params.id, { status: q.body.status })));
-app.delete('/api/admin/bookings/:id', auth, async (q, s) => s.json(await db.del('bookings', q.params.id)));
-app.post('/api/admin/menu', auth, async (q, s) => s.json(await db.add('menu', q.body)));
-app.delete('/api/admin/menu/:id', auth, async (q, s) => s.json(await db.del('menu', q.params.id)));
-const seed = [
-  ['Chicken Biryani', 'Aromatic basmati, tender chicken, secret masala', 450, 'Rice', '🍛'], ['Beef Biryani', 'Slow-cooked Karachi style, bold & spicy', 520, 'Rice', '🍚'],
-  ['Chicken Karahi', 'Wok-fired with tomatoes, ginger & green chilli', 1450, 'Karahi', '🍲'], ['Mutton Karahi', 'Desi ghee, fresh spices, melt-in-mouth mutton', 2400, 'Karahi', '🥘'],
-  ['Seekh Kabab', 'Charcoal grilled, juicy minced beef', 380, 'BBQ', '🍢'], ['Chicken Tikka', 'Smoky, marinated overnight', 420, 'BBQ', '🍗'],
-  ['Halwa Puri', 'Classic Sunday breakfast with chana & aloo', 350, 'Breakfast', '🥞'], ['Doodh Patti Chai', 'Dum-brewed, creamy, perfect', 100, 'Drinks', '☕'],
-].map(([name, desc, price, cat, emoji]) => ({ name, desc, price, cat, emoji }));
-mem.menu = seed.map(d => ({ ...d, _id: String(nid++) }));
-app.listen(process.env.PORT || 5000, () => console.log('API ready on http://localhost:5000'));
+
+app.listen(PORT, () => console.log(`API ready on http://localhost:${PORT}`));
 mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/masterfoods', { serverSelectionTimeoutMS: 3000 }).then(async () => {
-  useMongo = true; if (!(await Menu.countDocuments())) await Menu.insertMany(seed); console.log('MongoDB connected');
-}).catch(() => console.log('MongoDB not found -> using in-memory demo data (fine for demo)'));
+  useMongo = true;
+  if (!(await Menu.countDocuments())) await Menu.insertMany(SEED_MENU);
+  console.log('MongoDB connected');
+}).catch(() => console.log('MongoDB not found -> using in-memory demo data (fine for demo; resets on restart)'));

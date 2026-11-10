@@ -1,0 +1,388 @@
+[
+  {
+    "name": "Zinger Burger",
+    "desc": "Crispy fillet, mayo & fresh lettuce",
+    "price": 450,
+    "cat": "Premium Burger",
+    "emoji": "🍔"
+  },
+  {
+    "name": "Beef Smash Burger",
+    "desc": "Double patty, cheese, house sauce",
+    "price": 690,
+    "cat": "Premium Burger",
+    "emoji": "🍔",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Chicken Tikka Burger",
+    "desc": "Tikka fillet, mint chutney, onion rings",
+    "price": 520,
+    "cat": "Premium Burger",
+    "emoji": "🍔"
+  },
+  {
+    "name": "Mighty Stack Burger",
+    "desc": "Triple stack with beef, chicken & egg",
+    "price": 790,
+    "cat": "Premium Burger",
+    "emoji": "🍔",
+    "badge": "New Arrival"
+  },
+  {
+    "name": "Chicken Biryani 1 Kg",
+    "desc": "(with 3 Pcs)",
+    "price": 870,
+    "cat": "Biryani",
+    "emoji": "🍛",
+    "badge": "New Arrival"
+  },
+  {
+    "name": "Beef Biryani 1 KG",
+    "desc": "(with 7 Pcs)",
+    "price": 1020,
+    "cat": "Biryani",
+    "emoji": "🍛",
+    "badge": "New Arrival"
+  },
+  {
+    "name": "Chicken Biryani",
+    "desc": "Single plate",
+    "price": 260,
+    "cat": "Biryani",
+    "emoji": "🍛",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Beef Biryani",
+    "desc": "Single plate",
+    "price": 290,
+    "cat": "Biryani",
+    "emoji": "🍛"
+  },
+  {
+    "name": "Special Haleem",
+    "desc": "Slow-cooked, topped with fried onion & lemon",
+    "price": 360,
+    "cat": "Haleem",
+    "emoji": "🥣",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Chicken Haleem",
+    "desc": "Single plate",
+    "price": 320,
+    "cat": "Haleem",
+    "emoji": "🥣"
+  },
+  {
+    "name": "Beef Haleem 1 Kg",
+    "desc": "(serves 3 to 4)",
+    "price": 1200,
+    "cat": "Haleem",
+    "emoji": "🥣"
+  },
+  {
+    "name": "Chicken Pulao",
+    "desc": "Fragrant yakhni rice with tender chicken",
+    "price": 240,
+    "cat": "Pulao",
+    "emoji": "🍚"
+  },
+  {
+    "name": "Beef Pulao",
+    "desc": "Single plate",
+    "price": 270,
+    "cat": "Pulao",
+    "emoji": "🍚"
+  },
+  {
+    "name": "Yakhni Pulao 1 Kg",
+    "desc": "(with 4 Pcs)",
+    "price": 780,
+    "cat": "Pulao",
+    "emoji": "🍚",
+    "badge": "New Arrival"
+  },
+  {
+    "name": "Chicken Karahi Half",
+    "desc": "Wok-fired with tomatoes, ginger & green chilli",
+    "price": 1450,
+    "cat": "Karahi",
+    "emoji": "🍲",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Chicken Karahi Full",
+    "desc": "Serves 4 to 5",
+    "price": 2750,
+    "cat": "Karahi",
+    "emoji": "🍲"
+  },
+  {
+    "name": "Mutton Karahi Half",
+    "desc": "Desi ghee, fresh spices, melt-in-mouth mutton",
+    "price": 2400,
+    "cat": "Karahi",
+    "emoji": "🥘"
+  },
+  {
+    "name": "Namkeen Gosht",
+    "desc": "White karahi style with black pepper",
+    "price": 2600,
+    "cat": "Karahi",
+    "emoji": "🥘",
+    "badge": "New Arrival"
+  },
+  {
+    "name": "Special BBQ Platter",
+    "desc": "Tikka, seekh kabab, malai boti & naan",
+    "price": 1650,
+    "cat": "Bar B.Q. Platter",
+    "emoji": "🍖",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Family BBQ Platter",
+    "desc": "Mixed grill for 4 to 5 people",
+    "price": 2450,
+    "cat": "Bar B.Q. Platter",
+    "emoji": "🍖"
+  },
+  {
+    "name": "Behari Platter",
+    "desc": "Behari boti, kabab & 2 naan",
+    "price": 1850,
+    "cat": "Bar B.Q. Platter",
+    "emoji": "🍖",
+    "badge": "New Arrival"
+  },
+  {
+    "name": "Chicken Tikka Chest",
+    "desc": "Charcoal grilled, smoky & juicy",
+    "price": 540,
+    "cat": "Bar B.Q",
+    "emoji": "🍢",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Chicken Tikka Leg",
+    "desc": "Marinated overnight",
+    "price": 420,
+    "cat": "Bar B.Q",
+    "emoji": "🍗"
+  },
+  {
+    "name": "Seekh Kabab",
+    "desc": "(4 Pcs)",
+    "price": 380,
+    "cat": "Bar B.Q",
+    "emoji": "🍢"
+  },
+  {
+    "name": "Chicken Malai Boti",
+    "desc": "(8 Pcs)",
+    "price": 480,
+    "cat": "Bar B.Q",
+    "emoji": "🍢",
+    "badge": "New Arrival"
+  },
+  {
+    "name": "Behari Kabab",
+    "desc": "(6 Pcs)",
+    "price": 520,
+    "cat": "Bar B.Q",
+    "emoji": "🍢"
+  },
+  {
+    "name": "Chicken Manchurian",
+    "desc": "Served with fried rice option",
+    "price": 690,
+    "cat": "Chinese",
+    "emoji": "🥡"
+  },
+  {
+    "name": "Chicken Chilli Dry",
+    "desc": "Crispy, tossed with peppers",
+    "price": 720,
+    "cat": "Chinese",
+    "emoji": "🥡",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Chicken Shashlik",
+    "desc": "Capsicum, onion & pineapple",
+    "price": 760,
+    "cat": "Chinese",
+    "emoji": "🥡"
+  },
+  {
+    "name": "Singaporean Rice",
+    "desc": "Curry-spiced noodles with chicken",
+    "price": 520,
+    "cat": "Singaporean Rice",
+    "emoji": "🍜",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Singaporean Special",
+    "desc": "Extra chicken & prawns",
+    "price": 690,
+    "cat": "Singaporean Rice",
+    "emoji": "🍜",
+    "badge": "New Arrival"
+  },
+  {
+    "name": "Egg Fried Rice",
+    "desc": "Wok tossed with spring onion",
+    "price": 320,
+    "cat": "Fried Rice",
+    "emoji": "🍳"
+  },
+  {
+    "name": "Chicken Fried Rice",
+    "desc": "Classic restaurant style",
+    "price": 420,
+    "cat": "Fried Rice",
+    "emoji": "🍳",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Vegetable Fried Rice",
+    "desc": "Seasonal vegetables",
+    "price": 340,
+    "cat": "Fried Rice",
+    "emoji": "🍳"
+  },
+  {
+    "name": "Chicken Corn Soup",
+    "desc": "Creamy & comforting",
+    "price": 280,
+    "cat": "Soups",
+    "emoji": "🍵"
+  },
+  {
+    "name": "Hot & Sour Soup",
+    "desc": "Peppery with a tangy kick",
+    "price": 300,
+    "cat": "Soups",
+    "emoji": "🍵",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Chicken Chatni Roll",
+    "desc": "Paratha roll with green chutney",
+    "price": 280,
+    "cat": "Chatni Rolls",
+    "emoji": "🌯",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Beef Chatni Roll",
+    "desc": "Spicy beef filling",
+    "price": 320,
+    "cat": "Chatni Rolls",
+    "emoji": "🌯"
+  },
+  {
+    "name": "Paratha Roll Deal",
+    "desc": "2 rolls + drink",
+    "price": 640,
+    "cat": "Chatni Rolls",
+    "emoji": "🌯",
+    "badge": "New Arrival"
+  },
+  {
+    "name": "Halwa Puri",
+    "desc": "Classic Sunday breakfast with chana & aloo",
+    "price": 350,
+    "cat": "Breakfast",
+    "emoji": "🥞",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Aloo Paratha",
+    "desc": "With chai & achar",
+    "price": 290,
+    "cat": "Breakfast",
+    "emoji": "🫓"
+  },
+  {
+    "name": "Nashta Nihari",
+    "desc": "With naan",
+    "price": 450,
+    "cat": "Breakfast",
+    "emoji": "🍲"
+  },
+  {
+    "name": "Mayo Garlic",
+    "desc": "Dip",
+    "price": 70,
+    "cat": "Sides",
+    "emoji": "🥣"
+  },
+  {
+    "name": "Puri Paratha",
+    "desc": "",
+    "price": 70,
+    "cat": "Sides",
+    "emoji": "🫓"
+  },
+  {
+    "name": "Raita",
+    "desc": "",
+    "price": 60,
+    "cat": "Sides",
+    "emoji": "🥛"
+  },
+  {
+    "name": "Garlic Bread",
+    "desc": "",
+    "price": 260,
+    "cat": "Sides",
+    "emoji": "🥖"
+  },
+  {
+    "name": "Naan",
+    "desc": "",
+    "price": 30,
+    "cat": "Sides",
+    "emoji": "🫓"
+  },
+  {
+    "name": "Fresh Salad",
+    "desc": "",
+    "price": 80,
+    "cat": "Sides",
+    "emoji": "🥗"
+  },
+  {
+    "name": "Doodh Patti Chai",
+    "desc": "Dum-brewed, creamy, perfect",
+    "price": 100,
+    "cat": "Drinks",
+    "emoji": "☕",
+    "badge": "Most Favourite"
+  },
+  {
+    "name": "Mint Margarita",
+    "desc": "Fresh mint & lemon",
+    "price": 220,
+    "cat": "Drinks",
+    "emoji": "🍹"
+  },
+  {
+    "name": "Sweet Lassi",
+    "desc": "Thick & chilled",
+    "price": 180,
+    "cat": "Drinks",
+    "emoji": "🥛"
+  },
+  {
+    "name": "Soft Drink 1.5 L",
+    "desc": "",
+    "price": 220,
+    "cat": "Drinks",
+    "emoji": "🥤"
+  }
+]

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HttpError, clean, normalizePhone, priceOrder } from './lib.js';
+import { HttpError, clean, normalizeOrderType, normalizePhone, priceOrder } from './lib.js';
 
 const menu = [
   { _id: '1', name: 'Chicken Tikka Chest', price: 540 },
@@ -35,6 +35,17 @@ test('normalizePhone', () => {
   assert.equal(normalizePhone('923001234567'), '03001234567');
   assert.equal(normalizePhone('021-34813245'), '');
   assert.equal(normalizePhone(undefined), '');
+});
+
+test('normalizeOrderType defaults to delivery', () => {
+  assert.equal(normalizeOrderType('pickup'), 'pickup');
+  for (const v of ['delivery', 'PICKUP', '', undefined, null, 5, {}]) assert.equal(normalizeOrderType(v), 'delivery');
+});
+
+test('a pickup order has no delivery fee', () => {
+  const r = priceOrder([{ id: '1', qty: 2 }], menu, 0);
+  assert.equal(r.deliveryFee, 0);
+  assert.equal(r.total, 1080);
 });
 
 test('clean', () => {

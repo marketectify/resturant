@@ -58,6 +58,7 @@ export function StoreProvider({ children }) {
   const [cart, dispatch] = useReducer(cartReducer, undefined, loadCart);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [orderType, setOrderType] = useState('delivery'); // 'delivery' | 'pickup'
 
   useEffect(() => {
     api('/api/menu').then(d => setMenu(d.length ? d : DEMO_MENU)).catch(() => setMenu(DEMO_MENU));
@@ -77,6 +78,7 @@ export function StoreProvider({ children }) {
   const remove = useCallback(id => dispatch({ type: 'remove', id }), []);
   const clear = useCallback(() => dispatch({ type: 'clear' }), []);
 
-  const value = { menu, deliveryFee, lines, count, subtotal, total: subtotal + (count ? deliveryFee : 0), add, inc, dec, remove, clear, drawerOpen, setDrawerOpen, searchOpen, setSearchOpen };
+  const fee = count && orderType === 'delivery' ? deliveryFee : 0;
+  const value = { menu, deliveryFee, fee, orderType, setOrderType, lines, count, subtotal, total: subtotal + fee, add, inc, dec, remove, clear, drawerOpen, setDrawerOpen, searchOpen, setSearchOpen };
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

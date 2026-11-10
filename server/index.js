@@ -6,7 +6,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { HttpError, ORDER_STATUSES, BOOKING_STATUSES, clean, normalizePhone, priceOrder } from './lib.js';
+import { HttpError, ORDER_STATUSES, BOOKING_STATUSES, clean, normalizeOrderType, normalizePhone, priceOrder } from './lib.js';
 
 const PORT = process.env.PORT || 5000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'master123';
@@ -24,7 +24,7 @@ const SEED_MENU = JSON.parse(fs.readFileSync(new URL('../shared/menu.json', impo
 const Menu = mongoose.model('Menu', new mongoose.Schema({ name: String, desc: String, price: Number, cat: String, emoji: String, badge: String, img: String }));
 const Booking = mongoose.model('Booking', new mongoose.Schema({ name: String, phone: String, date: String, time: String, guests: Number, note: String, status: { type: String, default: 'pending' } }, { timestamps: true }));
 const Order = mongoose.model('Order', new mongoose.Schema({
-  orderNo: String, title: String, name: String, phone: String, altPhone: String, email: String,
+  orderNo: String, orderType: { type: String, default: 'delivery' }, payment: { type: String, default: 'cod' }, title: String, name: String, phone: String, altPhone: String, email: String,
   area: String, address: String, landmark: String, instructions: String,
   items: [{ _id: false, menuId: String, name: String, price: Number, qty: Number }],
   subtotal: Number, deliveryFee: Number, total: Number,
@@ -81,22 +81,24 @@ app.post('/api/orders', ah(async (q, s) => {
   const b = q.body ?? {};
   const name = clean(b.name, 80);
   const phone = normalizePhone(b.phone);
+  const orderType = normalizeOrderType(b.orderType);
   const address = clean(b.address, 300);
   const altRaw = clean(b.altPhone, 20);
   const altPhone = altRaw ? normalizePhone(altRaw) : '';
   if (!name) throw new HttpError(400, 'Please enter your full name');
   if (!phone) throw new HttpError(400, 'Please enter a valid mobile number (03xx-xxxxxxx)');
   if (altRaw && !altPhone) throw new HttpError(400, 'Alternate mobile number is not valid');
-  if (!address) throw new HttpError(400, 'Please enter your delivery address');
+  if (orderType === 'delivery' && !address) throw new HttpError(400, 'Please enter your delivery address');
 
-  const priced = priceOrder(b.items, await db.list('menu'), DELIVERY_FEE);
+  const priced = priceOrder(b.items, await db.list('menu'), orderType === 'pickup' ? 0 : DELIVERY_FEE);
   const order = await db.add('orders', {
-    orderNo: 'MF-' + Date.now().toString(36).toUpperCase().slice(-5),
+    orderNo: 'MF-' + Date.now().toString(36).toUpperCase().slice(-5), orderType, payment: 'cod',
     title: clean(b.title, 10), name, phone, altPhone, email: clean(b.email, 120),
-    area: clean(b.area, 80), address, landmark: clean(b.landmark, 120), instructions: clean(b.instructions, 300),
+    area: orderType === 'pickup' ? '' : clean(b.area, 80), address: orderType === 'pickup' ? '' : address,
+    landmark: orderType === 'pickup' ? '' : clean(b.landmark, 120), instructions: clean(b.instructions, 300),
     ...priced, status: 'new',
   });
-  s.status(201).json({ orderNo: order.orderNo, subtotal: order.subtotal, deliveryFee: order.deliveryFee, total: order.total });
+  s.status(201).json({ orderNo: order.orderNo, orderType, subtotal: order.subtotal, deliveryFee: order.deliveryFee, total: order.total, items: order.items });
 }));
 
 app.post('/api/bookings', ah(async (q, s) => {

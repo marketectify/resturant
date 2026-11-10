@@ -40,12 +40,11 @@ function Popular() {
 }
 
 export function Summary({ className = '' }) {
-  const { subtotal, deliveryFee, total, count } = useStore();
-  const fee = count ? deliveryFee : 0;
+  const { subtotal, fee, orderType, total } = useStore();
   return (
     <div className={`summary ${className}`}>
       <div className="sum-row"><Icon name="calculator" size={22} /><span>Total</span><b>{rs(subtotal)}</b></div>
-      <div className="sum-row"><Icon name="truck" size={22} /><span>Delivery Fee</span><b>{rs(fee)}</b></div>
+      <div className="sum-row"><Icon name="truck" size={22} /><span>{orderType === 'pickup' ? 'Pickup (no delivery fee)' : 'Delivery Fee'}</span><b>{rs(fee)}</b></div>
       <div className="sum-grand"><span>Grand Total</span><b>{rs(total)}</b></div>
     </div>
   );

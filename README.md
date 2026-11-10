@@ -1,6 +1,6 @@
 # Master Foods & Pakwan Centre (MERN demo)
 
-Online ordering demo for a Karachi restaurant: category menu, cart drawer, checkout (delivery orders), table booking and an admin panel.
+Online ordering demo for a Karachi restaurant: category menu, cart drawer, checkout (delivery or pickup, cash payment), table booking and an admin panel.
 
 ## Run it
 
@@ -14,7 +14,7 @@ Online ordering demo for a Karachi restaurant: category menu, cart drawer, check
 | Route | What |
 | --- | --- |
 | `#/` | Menu with sticky category pills, search, cart drawer |
-| `#/checkout` | Delivery order form (mobile number format `03xx-xxxxxxx`) |
+| `#/checkout` | Delivery / Pickup toggle, order form (mobile number format `03xx-xxxxxxx`), cash payment, order confirmation with item list |
 | `#/book` | Table booking |
 | `#/admin` | Orders (with status), bookings and menu management |
 
@@ -23,7 +23,7 @@ Online ordering demo for a Karachi restaurant: category menu, cart drawer, check
 - Business details (name, phone, hours, map, delivery areas): `client/src/config.js`
 - Menu items and categories: `shared/menu.json` (used as the first-run seed and as the offline fallback), or add items from the admin panel. Item pictures: set an image URL in the admin form, otherwise an emoji tile is shown.
 - Delivery fee: `DELIVERY_FEE` in `server/.env` (default 180). Prices and totals are always calculated on the server.
-- Background: `client/public/bg.svg` (fixed behind the whole site).
+- Background: `client/public/bg.svg` (fixed behind the whole site). To use your own photo, copy it to `client/public/bg.jpg` and change `/bg.svg` to `/bg.jpg` in `client/src/style.css` (`body::before`).
 
 ## Offline / static demo mode
 
@@ -41,4 +41,4 @@ Set `ADMIN_PASSWORD` and `MONGO_URI` in the server environment. If your host set
 
 ## Tests
 
-`npm test` runs the order pricing and validation tests.
+`npm test` runs the order pricing, order type and validation tests.

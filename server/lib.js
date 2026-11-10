@@ -13,6 +13,9 @@ export const BOOKING_STATUSES = ['pending', 'confirmed', 'cancelled'];
 /** Trim a user supplied string and cap its length. Non-strings become ''. */
 export const clean = (v, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
+/** Only 'pickup' is special; anything else is a delivery order. */
+export const normalizeOrderType = v => (v === 'pickup' ? 'pickup' : 'delivery');
+
 /** Accepts 03xx-xxxxxxx, 03xxxxxxxxx or +92 3xx xxxxxxx. Returns 03xxxxxxxxx or ''. */
 export function normalizePhone(v) {
   let d = String(v ?? '').replace(/\D/g, '');

@@ -87,9 +87,9 @@ export default function Admin() {
               <tr key={o._id}>
                 <td><b>{o.orderNo}</b><small>{when(o.createdAt)}</small></td>
                 <td>{o.title} {o.name}<small>{o.phone}{o.altPhone ? ` / ${o.altPhone}` : ''}</small></td>
-                <td>{o.address}<small>{o.area}{o.landmark ? ` · near ${o.landmark}` : ''}{o.instructions ? ` · “${o.instructions}”` : ''}</small></td>
+                <td>{o.orderType === 'pickup' ? <b>Pickup</b> : o.address}<small>{o.orderType === 'pickup' ? '' : o.area}{o.landmark ? ` · near ${o.landmark}` : ''}{o.instructions ? ` · “${o.instructions}”` : ''}</small></td>
                 <td>{o.items.map(i => <div key={i.menuId}>{i.qty}× {i.name}</div>)}</td>
-                <td><b>{rs(o.total)}</b><small>incl. {rs(o.deliveryFee)} delivery</small></td>
+                <td><b>{rs(o.total)}</b><small>{o.orderType === 'pickup' ? 'cash at pickup' : `incl. ${rs(o.deliveryFee)} delivery · COD`}</small></td>
                 <td><select className={`st-sel ${o.status}`} value={o.status} onChange={e => patch('orders', o._id, e.target.value)} aria-label={`Status of order ${o.orderNo}`}>{ORDER_STATUS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></td>
                 <td><button className="icon-btn" onClick={() => del('orders', o._id, `order ${o.orderNo}`)} aria-label={`Delete order ${o.orderNo}`}>🗑</button></td>
               </tr>

@@ -22,7 +22,7 @@ app.use(cors(), express.json({ limit: '50kb' }));
 // Uses MongoDB when it is reachable, otherwise falls back to in-memory demo data (resets on restart).
 const SEED_MENU = JSON.parse(fs.readFileSync(new URL('../shared/menu.json', import.meta.url), 'utf8'));
 
-const Menu = mongoose.model('Menu', new mongoose.Schema({ name: String, desc: String, price: Number, cat: String, emoji: String, badge: String, img: String }));
+const Menu = mongoose.model('Menu', new mongoose.Schema({ name: String, desc: String, price: Number, cat: String, emoji: String, badge: String, img: String, details: String, deal: String }));
 const Booking = mongoose.model('Booking', new mongoose.Schema({ name: String, phone: String, date: String, time: String, guests: Number, note: String, status: { type: String, default: 'pending' } }, { timestamps: true }));
 const Order = mongoose.model('Order', new mongoose.Schema({
   orderNo: String, orderType: { type: String, default: 'delivery' }, payment: { type: String, default: 'cod' }, title: String, name: String, phone: String, altPhone: String, email: String,
@@ -155,7 +155,7 @@ app.delete('/api/admin/bookings/:id', auth, ah(async (q, s) => s.json(found(awai
 
 app.post('/api/admin/menu', auth, ah(async (q, s) => {
   const b = q.body ?? {};
-  const item = { name: clean(b.name, 80), desc: clean(b.desc, 120), price: Number(b.price), cat: clean(b.cat, 40), emoji: clean(b.emoji, 8), badge: clean(b.badge, 30), img: clean(b.img, 500) };
+  const item = { name: clean(b.name, 80), desc: clean(b.desc, 120), price: Number(b.price), cat: clean(b.cat, 40), emoji: clean(b.emoji, 8), badge: clean(b.badge, 30), img: clean(b.img, 500), details: clean(b.details, 600), deal: clean(b.deal, 200) };
   if (!item.name || !item.cat || !Number.isFinite(item.price) || item.price < 0) throw new HttpError(400, 'Name, category and a valid price are required');
   s.status(201).json(await db.add('menu', item));
 }));

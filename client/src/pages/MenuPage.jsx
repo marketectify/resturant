@@ -7,7 +7,6 @@ import { CartFab, MenuFloaters } from '../components/Floaters.jsx';
 import { useStore } from '../store.jsx';
 
 const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-const LINE = 130; // px from the top of the window: a section whose top has passed this line is "current"
 
 export default function MenuPage() {
   const { menu } = useStore();
@@ -28,10 +27,11 @@ export default function MenuPage() {
     if (!cats.length) return undefined;
     const spy = () => {
       if (Date.now() < lock.current) return;
+      const line = (document.querySelector('.pillbar')?.getBoundingClientRect().bottom ?? 130) + 24; // below the fixed header
       let now = cats[0];
       for (const c of cats) {
         const el = document.getElementById(`cat-${slug(c)}`);
-        if (el && el.getBoundingClientRect().top <= LINE) now = c;
+        if (el && el.getBoundingClientRect().top <= line) now = c;
       }
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) now = cats[cats.length - 1];
       setActive(now);

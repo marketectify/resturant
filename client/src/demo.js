@@ -104,7 +104,7 @@ export function demoCall(url, { method = 'GET', body, token } = {}) {
     const list = kind === 'menu' ? (d.menu ||= [...seedMenu]) : d[kind];
     if (method === 'GET' && !id) return kind === 'menu' ? [...list] : [...list].reverse();
     if (method === 'POST' && kind === 'menu') {
-      const item = { _id: 'd' + Date.now(), name: clean(b.name, 80), desc: clean(b.desc, 120), price: Number(b.price), cat: clean(b.cat, 40), emoji: clean(b.emoji, 8), badge: clean(b.badge, 30), img: clean(b.img, 500) };
+      const item = { _id: 'd' + Date.now(), name: clean(b.name, 80), desc: clean(b.desc, 120), price: Number(b.price), cat: clean(b.cat, 40), emoji: clean(b.emoji, 8), badge: clean(b.badge, 30), img: clean(b.img, 500), details: clean(b.details, 600), deal: clean(b.deal, 200) };
       if (!item.name || !item.cat || !Number.isFinite(item.price) || item.price < 0) fail(400, 'Name, category and a valid price are required');
       list.push(item); save();
       return item;

@@ -7,6 +7,7 @@ import Track from './pages/Track.jsx';
 import Admin from './pages/Admin.jsx';
 import CartDrawer from './components/CartDrawer.jsx';
 import SearchModal from './components/SearchModal.jsx';
+import ProductModal from './components/ProductModal.jsx';
 import { ScrollTop, WhatsAppFab } from './components/Floaters.jsx';
 
 const route = () => location.hash.replace(/^#/, '').split('?')[0] || '/';
@@ -29,6 +30,7 @@ export default function App() {
     <StoreProvider>
       <Page />
       <CartDrawer />
+      <ProductModal />
       <SearchModal />
       <WhatsAppFab />
       <ScrollTop />

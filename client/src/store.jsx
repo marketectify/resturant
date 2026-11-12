@@ -23,7 +23,7 @@ function cartReducer(state, a) {
   switch (a.type) {
     case 'add': {
       const cur = state[a.item._id];
-      return { ...state, [a.item._id]: lineOf(a.item, Math.min(50, (cur?.qty || 0) + 1)) };
+      return { ...state, [a.item._id]: lineOf(a.item, Math.min(50, (cur?.qty || 0) + (a.qty || 1))) };
     }
     case 'inc': {
       const cur = state[a.id];
@@ -55,6 +55,7 @@ export function StoreProvider({ children }) {
   const [cart, dispatch] = useReducer(cartReducer, undefined, loadCart);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [detail, setDetail] = useState(null); // item whose detail card is open
   const [orderType, setOrderType] = useState('delivery'); // 'delivery' | 'pickup'
 
   useEffect(() => {
@@ -69,13 +70,13 @@ export function StoreProvider({ children }) {
   const count = lines.reduce((n, l) => n + l.qty, 0);
   const subtotal = lines.reduce((n, l) => n + l.price * l.qty, 0);
 
-  const add = useCallback(item => dispatch({ type: 'add', item }), []);
+  const add = useCallback((item, qty = 1) => dispatch({ type: 'add', item, qty }), []);
   const inc = useCallback(id => dispatch({ type: 'inc', id }), []);
   const dec = useCallback(id => dispatch({ type: 'dec', id }), []);
   const remove = useCallback(id => dispatch({ type: 'remove', id }), []);
   const clear = useCallback(() => dispatch({ type: 'clear' }), []);
 
   const fee = count && orderType === 'delivery' ? deliveryFee : 0;
-  const value = { menu, deliveryFee, fee, orderType, setOrderType, lines, count, subtotal, total: subtotal + fee, add, inc, dec, remove, clear, drawerOpen, setDrawerOpen, searchOpen, setSearchOpen };
+  const value = { menu, deliveryFee, fee, orderType, setOrderType, lines, count, subtotal, total: subtotal + fee, add, inc, dec, remove, clear, drawerOpen, setDrawerOpen, searchOpen, setSearchOpen, detail, setDetail };
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

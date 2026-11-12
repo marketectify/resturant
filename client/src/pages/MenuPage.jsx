@@ -18,6 +18,7 @@ export default function MenuPage() {
   }), [menu, cats]);
 
   const [active, setActive] = useState(null);
+  const [glide, setGlide] = useState(null);
   const pills = useRef(null);
   const lock = useRef(0); // while a click-scroll is running the scroll listener must not change the tab
   const current = active && cats.includes(active) ? active : cats[0];
@@ -41,6 +42,29 @@ export default function MenuPage() {
     return () => { window.removeEventListener('scroll', spy); window.removeEventListener('resize', spy); };
   }, [cats]);
 
+  // White highlight that slides under the active tab.
+  useEffect(() => {
+    const place = () => {
+      const on = pills.current?.querySelector('.pill.on');
+      if (on) setGlide({ left: on.offsetLeft, top: on.offsetTop, width: on.offsetWidth, height: on.offsetHeight });
+    };
+    place();
+    window.addEventListener('resize', place);
+    return () => window.removeEventListener('resize', place);
+  }, [current, cats]);
+
+  // Cards fade up as they scroll into view.
+  useEffect(() => {
+    if (!menu || !('IntersectionObserver' in window)) return undefined;
+    const root = document.documentElement;
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }), { rootMargin: '0px 0px -5% 0px' });
+    document.querySelectorAll('.menu-sec .card').forEach(el => io.observe(el));
+    root.classList.add('reveal');
+    return () => { io.disconnect(); root.classList.remove('reveal'); };
+  }, [menu]);
+
   // Keep the active tab visible inside the horizontally scrolling bar (without moving the page).
   useEffect(() => {
     const bar = pills.current;
@@ -62,6 +86,7 @@ export default function MenuPage() {
       <Header />
       <nav className="pillbar" aria-label="Menu categories">
         <div className="pills" ref={pills} role="tablist">
+          {glide && <span className={`pill-glide ready`} style={glide} aria-hidden="true" />}
           {menu === null
             ? Array.from({ length: 8 }, (_, i) => <span key={i} className="pill skel-pill" />)
             : cats.map(c => (
@@ -78,7 +103,7 @@ export default function MenuPage() {
         {menu === null ? (
           <section className="menu-grid">{Array.from({ length: 6 }, (_, i) => <div key={i} className="card skel" />)}</section>
         ) : sections.map(s => (
-          <section key={s.cat} id={`cat-${slug(s.cat)}`} className="menu-sec" aria-labelledby={`h-${slug(s.cat)}`}>
+          <section key={s.cat} id={`cat-${slug(s.cat)}`} className={`menu-sec${s.cat === current ? ' is-current' : ''}`} aria-labelledby={`h-${slug(s.cat)}`}>
             <div className="cat-banner">
               <h2 id={`h-${slug(s.cat)}`}>{s.cat}</h2>
               <div className="banner-art" aria-hidden="true">

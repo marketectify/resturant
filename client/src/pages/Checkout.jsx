@@ -70,10 +70,10 @@ function Done({ done }) {
           <li className="done-total"><span>Total ({done.orderType === 'pickup' ? 'pay at pickup' : 'cash on delivery'})</span><b className="red">{rs(done.total)}</b></li>
         </ul>
         <p className="muted">We will call you on {done.phone} to confirm your order.</p>
-        {done.demo && <p className="demo-note">Demo mode: the server is not connected, so this order was not actually sent.</p>}
+        {done.demo && <p className="demo-note">Demo mode: this order is saved only in this browser (open the Admin page here to see it). It was not sent to a real kitchen.</p>}
         <div className="done-actions">
           <a className="btn-wa" href={waLink(done)} target="_blank" rel="noreferrer"><Icon name="whatsapp" size={22} stroke={1.8} /> Send order on WhatsApp</a>
-          {!done.demo && <a className="btn-ghost" href={`#/track?no=${encodeURIComponent(done.orderNo)}&phone=${encodeURIComponent(done.phone)}`}>Track order</a>}
+          <a className="btn-ghost" href={`#/track?no=${encodeURIComponent(done.orderNo)}&phone=${encodeURIComponent(done.phone)}`}>Track order</a>
           <a className="btn-primary slim" href="#/">Back to menu</a>
         </div>
       </section>
@@ -107,14 +107,9 @@ export default function Checkout() {
       const r = await api('/api/orders', { method: 'POST', body: { ...f, orderType, payment: 'cod', items: lines.map(l => ({ id: l.id, qty: l.qty })) } });
       saveCustomer(f, remember);
       clear();
-      setDone({ orderNo: r.orderNo, orderType: r.orderType, items: r.items, fee: r.deliveryFee, total: r.total, name: f.name.trim(), phone: f.phone.trim(), address: f.address.trim() });
+      setDone({ orderNo: r.orderNo, orderType: r.orderType, items: r.items, fee: r.deliveryFee, total: r.total, name: f.name.trim(), phone: f.phone.trim(), address: f.address.trim(), demo: !!r.demo });
     } catch (er) {
-      if (er.offline) { // API not reachable (static demo hosting): finish the flow in demo mode
-        const items = lines.map(l => ({ menuId: l.id, name: l.name, price: l.price, qty: l.qty }));
-        saveCustomer(f, remember);
-        clear();
-        setDone({ orderNo: 'DEMO-' + Date.now().toString(36).toUpperCase().slice(-4), orderType, items, fee, total, name: f.name.trim(), phone: f.phone.trim(), address: f.address.trim(), demo: true });
-      } else setError(er.message);
+      setError(er.message);
     } finally { setBusy(false); }
   };
 

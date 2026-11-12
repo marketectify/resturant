@@ -42,15 +42,15 @@ h1, h2, h3, h4 { line-height: 1.2; }
 
 /* ===== Category pills ===== */
 .pillbar { position: sticky; top: 0; z-index: 30; margin-top: 0; height: 86px; display: flex; align-items: center; gap: 8px; padding: 0 20px 0 51px; background: #fff; box-shadow: 0 2px 12px #0000000f; }
-.pills { position: relative; flex: 1; display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; padding: 8px 4px; }
+.pills { position: relative; flex: 1; display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; padding: 12px 8px; }
 .pills::-webkit-scrollbar { display: none; }
 .pill { flex: none; height: 52px; padding: 0 26px; border-radius: 99px; background: var(--red); color: #fff; font-weight: 600; font-size: 15px; text-transform: uppercase; letter-spacing: .2px; white-space: nowrap; transition: background .2s, box-shadow .2s; }
 .pill { position: relative; z-index: 1; }
 .pill:hover { background: var(--red-d); }
 /* the active tab is see-through: a white "glide" pill slides underneath it from tab to tab */
 .pill.on, .pill.on:hover { background: transparent; color: var(--red); }
-.pill-glide { position: absolute; z-index: 0; border-radius: 99px; background: #fff; box-shadow: 0 6px 18px #00000026; pointer-events: none; opacity: 0; }
-.pill-glide.ready { opacity: 1; transition: left .5s cubic-bezier(.34, 1.45, .5, 1), width .5s cubic-bezier(.34, 1.45, .5, 1), top .2s; }
+.pill-glide { position: absolute; z-index: 0; border-radius: 99px; background: #fff; box-shadow: 0 3px 10px #00000026; pointer-events: none; opacity: 0; }
+.pill-glide.ready { opacity: 1; transition: left .5s cubic-bezier(.3, 1.15, .5, 1), width .4s cubic-bezier(.3, 1.15, .5, 1), top .2s; }
 .pill.skel-pill { width: 130px; opacity: .35; }
 .pill-next { flex: none; width: 38px; height: 52px; display: grid; place-items: center; color: #555; }
 

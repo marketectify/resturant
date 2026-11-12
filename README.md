@@ -56,3 +56,15 @@ The home page lists every category in one scrolling page. Clicking a category ta
 ## Demo mode (no server)
 
 When the built site is on plain static hosting there is no `/api`, so `client/src/demo.js` answers the calls inside the browser (data kept in that browser's localStorage). Ordering, tracking, booking and the admin panel all work; admin password in demo mode is `master123`. Orders are only visible in the browser that placed them. With the real Express server running, the real API is used instead.
+
+## Real server + MongoDB (Hostinger Node.js app + MongoDB Atlas)
+
+1. **Database**: create a free MongoDB Atlas cluster (M0). Database Access -> add a user (username + password). Network Access -> add `0.0.0.0/0` (Hostinger's IP is not fixed). Connect -> Drivers -> copy the connection string and put the database name before the `?`:
+   `mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/masterfoods?retryWrites=true&w=majority`
+2. **Hostinger**: Websites -> Add website -> Node.js Apps -> import the GitHub repo `marketectify/resturant`, branch `main`. Settings:
+   - Build command: `npm run build` (installs everything and builds the client)
+   - Start command: `npm start`, entry file `server/index.js`, Node 20 or newer
+   - Environment variables: `MONGO_URI` (the string above), `ADMIN_PASSWORD` (your own), `DELIVERY_FEE` (optional, default 180)
+3. Open `https://<your-domain>/api/health`. `{"ok":true,"db":"mongodb"}` means orders are stored in MongoDB; `"db":"memory"` means the connection failed (the Hostinger logs show why).
+
+The Express server serves the built site and the API from the same address, so no extra setup is needed. The first start fills the menu from `shared/menu.json`.

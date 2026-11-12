@@ -15,6 +15,7 @@ const DELIVERY_FEE = process.env.DELIVERY_FEE && Number.isFinite(feeFromEnv) && 
 if (!process.env.ADMIN_PASSWORD) console.warn('ADMIN_PASSWORD not set: using the default "master123". Set it in server/.env before going live.');
 
 const app = express();
+app.set('trust proxy', 1); // behind Hostinger's proxy: use the visitor's IP for the tracking rate limit
 app.use(cors(), express.json({ limit: '50kb' }));
 
 // ---------- Data layer ----------
@@ -74,6 +75,7 @@ const auth = (q, s, n) => {
 };
 
 // ---------- Public API ----------
+app.get('/api/health', (_q, s) => s.json({ ok: true, db: useMongo ? 'mongodb' : 'memory' }));
 app.get('/api/settings', (_q, s) => s.json({ deliveryFee: DELIVERY_FEE }));
 app.get('/api/menu', ah(async (_q, s) => s.json(await db.list('menu'))));
 
@@ -176,8 +178,8 @@ app.use((err, _q, s, _n) => {
 });
 
 app.listen(PORT, () => console.log(`API ready on http://localhost:${PORT}`));
-mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/masterfoods', { serverSelectionTimeoutMS: 3000 }).then(async () => {
+mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/masterfoods', { serverSelectionTimeoutMS: 10000 }).then(async () => {
   useMongo = true;
   if (!(await Menu.countDocuments())) await Menu.insertMany(SEED_MENU);
   console.log('MongoDB connected');
-}).catch(() => console.log('MongoDB not found -> using in-memory demo data (fine for demo; resets on restart)'));
+}).catch(err => console.log(`MongoDB not connected (${err.message}) -> using in-memory demo data (resets on restart)`));

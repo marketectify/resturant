@@ -1,10 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { api } from './api.js';
 import { BIZ } from './config.js';
-import SEED from '../../shared/menu.json';
-
-// Shown when the API is unreachable (e.g. static hosting) so the demo never looks empty.
-const DEMO_MENU = SEED.map((m, i) => ({ ...m, _id: 'd' + i }));
+import { seedMenu as DEMO_MENU } from './demo.js';
 
 const CART_KEY = 'mf-cart';
 const safe = fn => { try { return fn(); } catch { return undefined; } };

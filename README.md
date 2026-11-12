@@ -52,3 +52,7 @@ Drop photos into `client/public/menu/` named after the item (`chicken-biryani.jp
 ## Menu page
 
 The home page lists every category in one scrolling page. Clicking a category tab scrolls to that section, and scrolling the page switches the active tab.
+
+## Demo mode (no server)
+
+When the built site is on plain static hosting there is no `/api`, so `client/src/demo.js` answers the calls inside the browser (data kept in that browser's localStorage). Ordering, tracking, booking and the admin panel all work; admin password in demo mode is `master123`. Orders are only visible in the browser that placed them. With the real Express server running, the real API is used instead.

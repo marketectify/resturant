@@ -41,7 +41,7 @@ export default function Admin() {
   const [orders, setOrders] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [menu, setMenu] = useState([]);
-  const [n, setN] = useState({ name: '', desc: '', price: '', cat: '', emoji: '', badge: '', img: '' });
+  const [n, setN] = useState({ name: '', desc: '', price: '', cat: '', emoji: '', badge: '', img: '', details: '', deal: '' });
   const [msg, setMsg] = useState('');
 
   const logout = useCallback(() => { store.set(null); setToken(null); }, []);
@@ -58,7 +58,7 @@ export default function Admin() {
   const run = async (fn) => { setMsg(''); try { await fn(); await load(); } catch (e) { if (e.status === 401) logout(); else setMsg(e.message); } };
   const patch = (kind, id, status) => run(() => api(`/api/admin/${kind}/${id}`, { method: 'PATCH', body: { status }, token }));
   const del = (kind, id, label) => { if (window.confirm(`Delete ${label}?`)) run(() => api(`/api/admin/${kind}/${id}`, { method: 'DELETE', token })); };
-  const addItem = e => { e.preventDefault(); run(async () => { await api('/api/admin/menu', { method: 'POST', body: { ...n, price: Number(n.price) }, token }); setN({ name: '', desc: '', price: '', cat: '', emoji: '', badge: '', img: '' }); }); };
+  const addItem = e => { e.preventDefault(); run(async () => { await api('/api/admin/menu', { method: 'POST', body: { ...n, price: Number(n.price) }, token }); setN({ name: '', desc: '', price: '', cat: '', emoji: '', badge: '', img: '', details: '', deal: '' }); }); };
 
   const cats = [...new Set(menu.map(m => m.cat))];
   const tabs = [['orders', `Orders (${orders.length})`], ['bookings', `Bookings (${bookings.length})`], ['menu', `Menu (${menu.length})`]];
@@ -129,6 +129,8 @@ export default function Admin() {
             <input placeholder="Emoji" maxLength={8} value={n.emoji} onChange={e => setN({ ...n, emoji: e.target.value })} />
             <input placeholder="Badge (e.g. New Arrival)" value={n.badge} onChange={e => setN({ ...n, badge: e.target.value })} />
             <input type="url" placeholder="Image URL (optional)" value={n.img} onChange={e => setN({ ...n, img: e.target.value })} />
+            <input placeholder="More details shown on the item card (optional)" value={n.details} onChange={e => setN({ ...n, details: e.target.value })} />
+            <input placeholder="Deal text, e.g. Buy 2 get a drink free (optional)" value={n.deal} onChange={e => setN({ ...n, deal: e.target.value })} />
             <button className="btn-primary slim" type="submit">Add item</button>
           </form>
           <div className="chips">{menu.map(m => <span key={m._id}>{m.emoji} {m.name} · {m.cat} · {rs(m.price)} <button onClick={() => del('menu', m._id, m.name)} aria-label={`Delete ${m.name}`}>×</button></span>)}</div>

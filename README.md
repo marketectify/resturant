@@ -43,3 +43,12 @@ Set `ADMIN_PASSWORD` and `MONGO_URI` in the server environment. If your host set
 ## Tests
 
 `npm test` runs the order pricing, order type, order tracking lookup and validation tests.
+
+
+## Food photos
+
+Drop photos into `client/public/menu/` named after the item (`chicken-biryani.jpg`, `seekh-kabab.jpg`, ...; see `client/public/menu/README.txt`). They show up automatically, and items without a photo keep the emoji tile. An image URL on the item (menu.json / admin form) takes priority.
+
+## Menu page
+
+The home page lists every category in one scrolling page. Clicking a category tab scrolls to that section, and scrolling the page switches the active tab.

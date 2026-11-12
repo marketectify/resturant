@@ -50,10 +50,13 @@ h1, h2, h3, h4 { line-height: 1.2; }
 .pill-next { flex: none; width: 38px; height: 52px; display: grid; place-items: center; color: #555; }
 
 /* ===== Category banner ===== */
-.cat-banner { position: relative; overflow: hidden; width: var(--wrap); height: 295px; margin: 22px auto 30px; padding: 0 6%; display: flex; align-items: center; justify-content: space-between; border-radius: 38px; background: linear-gradient(100deg, #fafafb 0%, #efeff1 55%, #e2e2e6 100%); box-shadow: 0 2px 12px #0000000a; scroll-margin-top: 100px; }
+.cat-banner { position: relative; overflow: hidden; width: var(--wrap); height: 230px; margin: 22px auto 30px; padding: 0 6%; display: flex; align-items: center; justify-content: space-between; border-radius: 38px; background: linear-gradient(100deg, #fafafb 0%, #efeff1 55%, #e2e2e6 100%); box-shadow: 0 2px 12px #0000000a; scroll-margin-top: 100px; }
+.menu-sec { scroll-margin-top: 100px; }
+.menu-sec .menu-grid { padding-bottom: 20px; }
+.menu-sec:last-of-type .menu-grid { padding-bottom: 150px; }
 /* thin inner frame, like the reference banner */
 .cat-banner::after { content: ''; position: absolute; inset: 20px 24px 22px 25px; z-index: 3; border: 1.5px solid #1b1b1d; pointer-events: none; }
-.cat-banner h1 { position: relative; z-index: 1; color: var(--red); font-size: clamp(42px, 7vw, 96px); font-weight: 500; letter-spacing: -2px; }
+.cat-banner h1, .cat-banner h2 { position: relative; z-index: 1; color: var(--red); font-size: clamp(42px, 7vw, 96px); font-weight: 500; letter-spacing: -2px; }
 .banner-art { position: relative; align-self: stretch; width: 44%; display: flex; align-items: center; justify-content: center; gap: 0; }
 .banner-art::before { content: ''; position: absolute; right: -4%; top: 50%; width: min(430px, 90%); aspect-ratio: 1; transform: translateY(-50%); border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff4dc, #f5cd84 65%, #e8a24c); }
 .banner-art span { position: relative; font-size: clamp(64px, 8vw, 128px); filter: drop-shadow(0 12px 14px #0003); margin-left: -14px; }
@@ -254,7 +257,7 @@ small { display: block; color: var(--mut); font-size: 12px; margin-top: 2px; }
   .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .page { grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 60px; }
   .page.single { grid-template-columns: minmax(0, 760px); }
-  .cat-banner { height: 240px; }
+  .cat-banner { height: 200px; }
 }
 @media (max-width: 700px) {
   .topbar { height: 70px; padding: 0 12px; }
@@ -267,7 +270,7 @@ small { display: block; color: var(--mut); font-size: 12px; margin-top: 2px; }
   .pill { height: 44px; padding: 0 18px; font-size: 13px; }
   .pills { gap: 10px; }
   .cat-banner { height: 170px; margin-top: 14px; border-radius: 26px; padding: 0 22px; }
-  .cat-banner h1 { letter-spacing: -1px; }
+  .cat-banner h1, .cat-banner h2 { letter-spacing: -1px; }
   .cat-banner::after { inset: 10px 12px; }
   .banner-art::before { width: 230px; }
   .menu-grid { grid-template-columns: 1fr; gap: 28px 0; padding-bottom: 170px; }
@@ -336,6 +339,8 @@ small { display: block; color: var(--mut); font-size: 12px; margin-top: 2px; }
 .top-links { display: flex; align-items: center; gap: 10px; }
 .track-link { display: inline-flex; align-items: center; height: 44px; padding: 0 20px; border: 2px solid #ffffff99; border-radius: 99px; color: #fff; font-size: 15px; font-weight: 600; transition: background .2s; }
 .track-link:hover { background: #ffffff22; }
+.head-search { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 99px; background: #fff; color: var(--red); font-size: 15px; font-weight: 600; box-shadow: 0 4px 14px #0002; }
+@media (max-width: 760px) { .head-search { width: 44px; padding: 0; justify-content: center; } }
 .remember { display: flex; align-items: center; gap: 10px; margin-top: 22px; font-size: 15px; color: #444; cursor: pointer; }
 .remember input { width: 20px; height: 20px; accent-color: var(--red); }
 .done-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 14px; }

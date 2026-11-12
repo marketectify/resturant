@@ -339,6 +339,8 @@ small { display: block; color: var(--mut); font-size: 12px; margin-top: 2px; }
 .top-links { display: flex; align-items: center; gap: 10px; }
 .track-link { display: inline-flex; align-items: center; height: 44px; padding: 0 20px; border: 2px solid #ffffff99; border-radius: 99px; color: #fff; font-size: 15px; font-weight: 600; transition: background .2s; }
 .track-link:hover { background: #ffffff22; }
+.head-search { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: 99px; background: #fff; color: var(--red); font-size: 15px; font-weight: 600; box-shadow: 0 4px 14px #0002; }
+@media (max-width: 760px) { .head-search { width: 44px; padding: 0; justify-content: center; } }
 .remember { display: flex; align-items: center; gap: 10px; margin-top: 22px; font-size: 15px; color: #444; cursor: pointer; }
 .remember input { width: 20px; height: 20px; accent-color: var(--red); }
 .done-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 14px; }

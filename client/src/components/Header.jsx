@@ -1,5 +1,6 @@
 import Icon from './Icon.jsx';
 import { BIZ } from '../config.js';
+import { useStore } from '../store.jsx';
 
 export function Logo() {
   return (
@@ -12,6 +13,7 @@ export function Logo() {
 }
 
 export default function Header() {
+  const { setSearchOpen } = useStore();
   return (
     <header className="topbar">
       <a className="phone-pill" href={`tel:${BIZ.phoneTel}`} aria-label={`Call ${BIZ.phone}`}>
@@ -20,6 +22,7 @@ export default function Header() {
       </a>
       <a className="logo" href="#/" aria-label={`${BIZ.short} home`}><Logo /></a>
       <nav className="top-links">
+        <button className="head-search" onClick={() => setSearchOpen(true)} aria-label="Search the menu"><Icon name="search" size={22} /><span className="hide-sm">Search</span></button>
         <a className="track-link" href="#/track">Track<span className="hide-sm">&nbsp;Order</span></a>
         <a className="book-pill" href="#/book">Book<span className="hide-sm">&nbsp;a Table</span></a>
       </nav>

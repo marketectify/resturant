@@ -42,15 +42,24 @@ export default function MenuPage() {
     return () => { window.removeEventListener('scroll', spy); window.removeEventListener('resize', spy); };
   }, [cats]);
 
-  // White highlight that slides under the active tab.
+  // White highlight that slides under the active tab. Re-measured whenever any tab changes size
+  // (web fonts finishing loading, window resize), so it can never drift away from its tab.
   useEffect(() => {
+    const bar = pills.current;
+    if (!bar) return undefined;
     const place = () => {
-      const on = pills.current?.querySelector('.pill.on');
-      if (on) setGlide({ left: on.offsetLeft, top: on.offsetTop, width: on.offsetWidth, height: on.offsetHeight });
+      const on = bar.querySelector('.pill.on');
+      if (!on) return;
+      const g = { left: on.offsetLeft, top: on.offsetTop, width: on.offsetWidth, height: on.offsetHeight };
+      setGlide(o => (o && o.left === g.left && o.top === g.top && o.width === g.width && o.height === g.height ? o : g));
     };
     place();
+    const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(place) : null;
+    ro?.observe(bar);
+    bar.querySelectorAll('.pill').forEach(el => ro?.observe(el));
+    document.fonts?.ready?.then(place);
     window.addEventListener('resize', place);
-    return () => window.removeEventListener('resize', place);
+    return () => { ro?.disconnect(); window.removeEventListener('resize', place); };
   }, [current, cats]);
 
   // Cards fade up as they scroll into view.
@@ -75,10 +84,21 @@ export default function MenuPage() {
 
   const go = useCallback(c => {
     setActive(c);
-    lock.current = Date.now() + 900;
+    lock.current = Date.now() + 3000; // safety net; normally released as soon as the scrolling stops
     document.getElementById(`cat-${slug(c)}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    const release = () => { lock.current = 0; };
-    if ('onscrollend' in window) window.addEventListener('scrollend', release, { once: true });
+  }, []);
+
+  // While a click-scroll is running the spy stays quiet (so the highlight does not hop through every
+  // category on the way); 150 ms after the last scroll event the lock is released.
+  useEffect(() => {
+    let t;
+    const onScroll = () => {
+      if (Date.now() >= lock.current) return;
+      clearTimeout(t);
+      t = setTimeout(() => { lock.current = 0; window.dispatchEvent(new Event('scroll')); }, 150);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => { window.removeEventListener('scroll', onScroll); clearTimeout(t); };
   }, []);
 
   return (

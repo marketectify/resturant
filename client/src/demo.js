@@ -41,7 +41,7 @@ export function demoCall(url, { method = 'GET', body, token } = {}) {
   if (path === '/api/menu') return [...menuList()];
 
   if (path === '/api/login') {
-    if (b.password !== PASSWORD) fail(401, 'Wrong password');
+    if (b.password !== PASSWORD) fail(401, 'Wrong password (this page is running without a server, in demo mode)');
     return { token: 'demo' };
   }
 

@@ -39,7 +39,7 @@ export default function ProductModal() {
         <button className="pm-close" ref={closeRef} onClick={close} aria-label="Close"><Icon name="close" size={18} stroke={2.6} /></button>
 
         <div className="pm-img">
-          <Thumb item={item} />
+          <Thumb key={item._id} item={item} />
           {item.badge && <span className="pm-badge">{item.badge}</span>}
         </div>
 

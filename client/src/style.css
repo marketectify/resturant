@@ -569,3 +569,14 @@ small { display: block; color: var(--mut); font-size: 12px; margin-top: 2px; }
   .menu-grid { column-gap: 0; }
   .card-img { margin: -36px -24px -8px 0; }
 }
+
+
+/* ===== Phone: search bar under the header, round button bottom-left once it scrolls away ===== */
+.m-search { display: none; }
+@media (max-width: 700px) {
+  .head-search { display: none; }
+  .m-search { display: flex; align-items: center; gap: 10px; width: calc(100% - 24px); height: 46px; margin: 12px auto 4px; padding: 0 18px; border-radius: 99px; background: #fff; color: #7a7a82; font-size: 14.5px; box-shadow: 0 4px 16px #0000001f; }
+  .m-search svg { color: var(--red); flex: none; }
+  .search-fab { opacity: 0; transform: scale(.5); pointer-events: none; transition: opacity .25s ease, transform .3s cubic-bezier(.3, 1.5, .5, 1); }
+  html.m-search-out .search-fab { opacity: 1; transform: none; pointer-events: auto; }
+}

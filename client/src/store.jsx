@@ -17,7 +17,7 @@ function loadCart() {
   return cart;
 }
 
-const lineOf = (item, qty) => ({ id: item._id, name: item.name, price: item.price, emoji: item.emoji, img: item.img, cat: item.cat, qty });
+const lineOf = (item, qty) => ({ id: item._id, name: item.name, price: item.price, emoji: item.emoji, img: item.img, cat: item.cat, desc: item.desc, qty });
 
 function cartReducer(state, a) {
   switch (a.type) {

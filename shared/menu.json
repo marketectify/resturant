@@ -30,6 +30,20 @@
     "badge": "New Arrival"
   },
   {
+    "name": "Crispy Zinger Double",
+    "desc": "Two crispy fillets, cheese & special sauce",
+    "price": 620,
+    "cat": "Premium Burger",
+    "emoji": "🍔"
+  },
+  {
+    "name": "Grilled Chicken Burger",
+    "desc": "Grilled fillet, lettuce & garlic mayo",
+    "price": 480,
+    "cat": "Premium Burger",
+    "emoji": "🍔"
+  },
+  {
     "name": "Chicken Biryani 1 Kg",
     "desc": "(with 3 Pcs)",
     "price": 870,
@@ -61,6 +75,28 @@
     "emoji": "🍛"
   },
   {
+    "name": "Chicken Biryani 2 Kg",
+    "desc": "Family pack, serves 6 to 8",
+    "price": 1650,
+    "cat": "Biryani",
+    "emoji": "🍛"
+  },
+  {
+    "name": "Beef Biryani 2 Kg",
+    "desc": "Family pack, serves 6 to 8",
+    "price": 1900,
+    "cat": "Biryani",
+    "emoji": "🍛"
+  },
+  {
+    "name": "Sindhi Biryani",
+    "desc": "Spicy, with potato & plum",
+    "price": 420,
+    "cat": "Biryani",
+    "emoji": "🍛",
+    "badge": "New Arrival"
+  },
+  {
     "name": "Special Haleem",
     "desc": "Slow-cooked, topped with fried onion & lemon",
     "price": 360,
@@ -79,6 +115,13 @@
     "name": "Beef Haleem 1 Kg",
     "desc": "(serves 3 to 4)",
     "price": 1200,
+    "cat": "Haleem",
+    "emoji": "🥣"
+  },
+  {
+    "name": "Mutton Haleem",
+    "desc": "Rich, slow-cooked mutton haleem",
+    "price": 450,
     "cat": "Haleem",
     "emoji": "🥣"
   },
@@ -103,6 +146,13 @@
     "cat": "Pulao",
     "emoji": "🍚",
     "badge": "New Arrival"
+  },
+  {
+    "name": "Chicken Pulao 1 Kg",
+    "desc": "Fragrant stock rice with chicken",
+    "price": 780,
+    "cat": "Pulao",
+    "emoji": "🍚"
   },
   {
     "name": "Chicken Karahi Half",
@@ -133,6 +183,41 @@
     "cat": "Karahi",
     "emoji": "🥘",
     "badge": "New Arrival"
+  },
+  {
+    "name": "Beef Karahi Half",
+    "desc": "Fresh tomato, ginger & green chilli",
+    "price": 1350,
+    "cat": "Karahi",
+    "emoji": "🍲"
+  },
+  {
+    "name": "Beef Karahi Full",
+    "desc": "Serves 4 to 5",
+    "price": 2600,
+    "cat": "Karahi",
+    "emoji": "🍲"
+  },
+  {
+    "name": "Mutton Karahi Full",
+    "desc": "Desi ghee, fresh spices",
+    "price": 4600,
+    "cat": "Karahi",
+    "emoji": "🍲"
+  },
+  {
+    "name": "Chicken Handi Half",
+    "desc": "Creamy, slow-cooked in a clay handi",
+    "price": 1500,
+    "cat": "Karahi",
+    "emoji": "🍲"
+  },
+  {
+    "name": "Chicken White Karahi Half",
+    "desc": "Cream, white pepper & green chilli",
+    "price": 1600,
+    "cat": "Karahi",
+    "emoji": "🍲"
   },
   {
     "name": "Special BBQ Platter",
@@ -195,6 +280,34 @@
     "emoji": "🍢"
   },
   {
+    "name": "Chicken Reshmi Kabab",
+    "desc": "Silky, creamy minced chicken",
+    "price": 460,
+    "cat": "Bar B.Q",
+    "emoji": "🍢"
+  },
+  {
+    "name": "Beef Boti",
+    "desc": "Tender cubes, charcoal grilled",
+    "price": 560,
+    "cat": "Bar B.Q",
+    "emoji": "🍢"
+  },
+  {
+    "name": "Chicken Tikka Boti",
+    "desc": "Boneless, marinated overnight",
+    "price": 480,
+    "cat": "Bar B.Q",
+    "emoji": "🍢"
+  },
+  {
+    "name": "Gola Kabab",
+    "desc": "Soft minced beef kabab",
+    "price": 420,
+    "cat": "Bar B.Q",
+    "emoji": "🍢"
+  },
+  {
     "name": "Chicken Manchurian",
     "desc": "Served with fried rice option",
     "price": 690,
@@ -213,6 +326,27 @@
     "name": "Chicken Shashlik",
     "desc": "Capsicum, onion & pineapple",
     "price": 760,
+    "cat": "Chinese",
+    "emoji": "🥡"
+  },
+  {
+    "name": "Chicken Chowmein",
+    "desc": "Stir-fried noodles with vegetables",
+    "price": 520,
+    "cat": "Chinese",
+    "emoji": "🍜"
+  },
+  {
+    "name": "Vegetable Chowmein",
+    "desc": "Noodles with mixed vegetables",
+    "price": 420,
+    "cat": "Chinese",
+    "emoji": "🍜"
+  },
+  {
+    "name": "Chicken Garlic Sauce",
+    "desc": "Chicken in garlic sauce",
+    "price": 650,
     "cat": "Chinese",
     "emoji": "🥡"
   },
@@ -270,6 +404,13 @@
     "badge": "Most Favourite"
   },
   {
+    "name": "Wonton Soup",
+    "desc": "Chicken wontons in clear broth",
+    "price": 360,
+    "cat": "Soups",
+    "emoji": "🍵"
+  },
+  {
     "name": "Chicken Chatni Roll",
     "desc": "Paratha roll with green chutney",
     "price": 280,
@@ -293,6 +434,20 @@
     "badge": "New Arrival"
   },
   {
+    "name": "Zinger Paratha Roll",
+    "desc": "Crispy zinger in a paratha",
+    "price": 350,
+    "cat": "Chatni Rolls",
+    "emoji": "🌯"
+  },
+  {
+    "name": "Seekh Kabab Roll",
+    "desc": "Seekh kabab, chutney & onion",
+    "price": 300,
+    "cat": "Chatni Rolls",
+    "emoji": "🌯"
+  },
+  {
     "name": "Halwa Puri",
     "desc": "Classic Sunday breakfast with chana & aloo",
     "price": 350,
@@ -311,6 +466,27 @@
     "name": "Nashta Nihari",
     "desc": "With naan",
     "price": 450,
+    "cat": "Breakfast",
+    "emoji": "🍲"
+  },
+  {
+    "name": "Anda Paratha",
+    "desc": "Fried egg with paratha",
+    "price": 220,
+    "cat": "Breakfast",
+    "emoji": "🍳"
+  },
+  {
+    "name": "Chana Puri",
+    "desc": "Spiced chickpeas with puri",
+    "price": 280,
+    "cat": "Breakfast",
+    "emoji": "🥞"
+  },
+  {
+    "name": "Paye",
+    "desc": "Slow-cooked trotters with naan",
+    "price": 520,
     "cat": "Breakfast",
     "emoji": "🍲"
   },
@@ -357,6 +533,27 @@
     "emoji": "🥗"
   },
   {
+    "name": "French Fries",
+    "desc": "Crispy salted fries",
+    "price": 220,
+    "cat": "Sides",
+    "emoji": "🍟"
+  },
+  {
+    "name": "Roghni Naan",
+    "desc": "Soft naan with sesame",
+    "price": 90,
+    "cat": "Sides",
+    "emoji": "🫓"
+  },
+  {
+    "name": "Tandoori Roti",
+    "desc": "Fresh from the tandoor",
+    "price": 35,
+    "cat": "Sides",
+    "emoji": "🫓"
+  },
+  {
     "name": "Doodh Patti Chai",
     "desc": "Dum-brewed, creamy, perfect",
     "price": 100,
@@ -384,5 +581,55 @@
     "price": 220,
     "cat": "Drinks",
     "emoji": "🥤"
+  },
+  {
+    "name": "Fresh Lime Soda",
+    "desc": "Sweet or salted",
+    "price": 160,
+    "cat": "Drinks",
+    "emoji": "🍋"
+  },
+  {
+    "name": "Cold Coffee",
+    "desc": "Chilled and creamy",
+    "price": 280,
+    "cat": "Drinks",
+    "emoji": "🧋"
+  },
+  {
+    "name": "Mineral Water",
+    "desc": "500 ml",
+    "price": 80,
+    "cat": "Drinks",
+    "emoji": "💧"
+  },
+  {
+    "name": "Kheer",
+    "desc": "Rice pudding with nuts",
+    "price": 180,
+    "cat": "Desserts",
+    "emoji": "🍮",
+    "badge": "New Arrival"
+  },
+  {
+    "name": "Gulab Jamun (2 Pcs)",
+    "desc": "Warm, in sugar syrup",
+    "price": 160,
+    "cat": "Desserts",
+    "emoji": "🍡"
+  },
+  {
+    "name": "Gajar Ka Halwa",
+    "desc": "Carrot halwa with khoya",
+    "price": 240,
+    "cat": "Desserts",
+    "emoji": "🥕"
+  },
+  {
+    "name": "Kulfi",
+    "desc": "Malai kulfi",
+    "price": 140,
+    "cat": "Desserts",
+    "emoji": "🍨"
   }
 ]

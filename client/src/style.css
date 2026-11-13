@@ -313,7 +313,7 @@ small { display: block; color: var(--mut); font-size: 12px; margin-top: 2px; }
   .page { width: calc(100% - 24px); margin-top: 46px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
 
 /* ===== Order type toggle, pickup info, payment, order summary ===== */
@@ -490,3 +490,72 @@ small { display: block; color: var(--mut); font-size: 12px; margin-top: 2px; }
   .pm-foot { bottom: -16px; }
 }
 @keyframes pmSheet { from { transform: translateY(100%); } }
+
+
+/* ===== Slightly larger type than the compact pass ===== */
+:root { --top-h: 68px; --bar-h: 64px; }
+.phone-pill { height: 46px; font-size: 16px; }
+.logo-badge { --s: .46; }
+.head-search, .track-link, .book-pill { height: 42px; font-size: 14.5px; padding: 0 18px; }
+.pill { height: 42px; padding: 0 20px; font-size: 13.5px; }
+.pills { padding: 11px 8px; }
+.pill-next { height: 42px; }
+.cat-banner { height: 180px; }
+.cat-banner h1, .cat-banner h2 { font-size: clamp(32px, 4.6vw, 66px); }
+.card h3 { font-size: 19px; }
+.card p { margin-top: 8px; font-size: 15px; }
+.price { font-size: 18px; padding: 5px 12px; }
+.badge { font-size: 13px; }
+@media (max-width: 700px) {
+  :root { --top-h: 58px; --bar-h: 54px; }
+  .logo-badge { --s: .36; }
+  .head-search { width: 40px; height: 40px; padding: 0; }
+  .book-pill { height: 40px; padding: 0 14px; font-size: 13px; }
+  .phone-pill { height: 40px; }
+  .pill { height: 38px; font-size: 12.5px; }
+  .cat-banner { height: 140px; }
+  .cat-banner h1, .cat-banner h2 { font-size: 32px; }
+  .card h3 { font-size: 17px; }
+  .card p { font-size: 14px; }
+  .price { font-size: 16px; }
+}
+
+/* ===== Card pictures step out of the card ===== */
+.menu-grid { row-gap: 60px; padding-top: 44px; }
+.badge { right: auto; left: 18px; }
+.card { overflow: visible; }
+.card-img { width: 158px; height: 158px; align-self: flex-start; margin: -48px -8px -10px 0; }
+.card-img .thumb { transition: transform .35s cubic-bezier(.3, 1.4, .5, 1); }
+.card-img span.thumb { background: radial-gradient(closest-side at 50% 58%, hsl(var(--h, 30) 85% 90%) 92%, transparent 94%); }
+.card-img .thumb-emoji { font-size: 84px; transform: translateY(-8px); filter: drop-shadow(0 12px 10px #0003); }
+.card-img img.thumb { border-radius: 50%; box-shadow: 0 14px 26px #0003; border: 4px solid #fff; }
+.card.clickable:hover .card-img .thumb { transform: translateY(-4px) scale(1.08) rotate(-4deg); }
+.card .add { right: 4px; bottom: 6px; }
+@media (max-width: 700px) {
+  .menu-grid { row-gap: 48px; padding-top: 38px; }
+  .card-img { width: 126px; height: 126px; margin: -36px -4px -8px 0; }
+  .card-img .thumb-emoji { font-size: 66px; }
+}
+
+/* ===== Always-on motion for headings and their pictures ===== */
+.cat-banner h1, .cat-banner h2 {
+  background: linear-gradient(100deg, var(--red) 0 38%, #ff8a5c 50%, var(--red) 62% 100%) 0 0 / 260% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shimmer 3.6s linear infinite;
+}
+.menu-sec.is-current .cat-banner h2 { animation: bannerTitle .6s cubic-bezier(.2, .8, .2, 1), shimmer 3.6s linear infinite; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -160% 0; } }
+.banner-art span { animation: floaty 4.6s ease-in-out infinite; }
+.banner-art span:nth-child(2) { animation-duration: 5.4s; animation-delay: -1.2s; }
+.banner-art span:nth-child(3) { animation-duration: 6.1s; animation-delay: -2.4s; }
+.banner-art .big { animation-name: floatyBig; }
+.banner-art::before { animation: glowPulse 4s ease-in-out infinite; }
+.menu-sec.is-current .banner-art span { animation: artPop .7s cubic-bezier(.3, 1.5, .5, 1) backwards, floaty 4.6s ease-in-out .7s infinite; }
+.menu-sec.is-current .banner-art .big { animation: artPop .7s cubic-bezier(.3, 1.5, .5, 1) backwards, floatyBig 4.6s ease-in-out .7s infinite; }
+.menu-sec.is-current .banner-art span:nth-child(2) { animation-delay: .08s, .78s; }
+.menu-sec.is-current .banner-art span:nth-child(3) { animation-delay: .16s, .86s; }
+.menu-sec.is-current .banner-art::before { animation: artGlow .8s ease-out, glowPulse 4s ease-in-out .8s infinite; }
+@keyframes floaty { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-12px) rotate(4deg); } }
+@keyframes floatyBig { 0%, 100% { transform: translateY(0) rotate(-4deg) scale(1); } 50% { transform: translateY(-16px) rotate(5deg) scale(1.05); } }
+@keyframes glowPulse { 0%, 100% { transform: translateY(-50%) scale(1); } 50% { transform: translateY(-50%) scale(1.06); } }
+.pm-img .thumb-emoji { animation: floatyBig 4.2s ease-in-out infinite; }

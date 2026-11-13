@@ -2,17 +2,18 @@ import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { HttpError, ORDER_STATUSES, BOOKING_STATUSES, clean, findOrderForTracking, normalizeOrderType, normalizePhone, priceOrder } from './lib.js';
+import { HttpError, ORDER_STATUSES, BOOKING_STATUSES, clean, findOrderForTracking, normalizeOrderType, makeToken, normalizePhone, priceOrder, verifyToken } from './lib.js';
 
 const PORT = process.env.PORT || 5000;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'master123';
+// Hosting panels sometimes keep stray spaces or quotes around a pasted value: strip them.
+const unquote = v => String(v ?? '').trim().replace(/^(['"])(.*)\1$/, '$2').trim();
+const ADMIN_PASSWORD = unquote(process.env.ADMIN_PASSWORD) || 'master123';
 const feeFromEnv = Number(process.env.DELIVERY_FEE);
 const DELIVERY_FEE = process.env.DELIVERY_FEE && Number.isFinite(feeFromEnv) && feeFromEnv >= 0 ? feeFromEnv : 180;
-if (!process.env.ADMIN_PASSWORD) console.warn('ADMIN_PASSWORD not set: using the default "master123". Set it in server/.env before going live.');
+if (!unquote(process.env.ADMIN_PASSWORD)) console.warn('ADMIN_PASSWORD not set: using the default "master123". Set it in server/.env before going live.');
 
 const app = express();
 app.set('trust proxy', 1); // behind Hostinger's proxy: use the visitor's IP for the tracking rate limit
@@ -31,6 +32,9 @@ const Order = mongoose.model('Order', new mongoose.Schema({
   subtotal: Number, deliveryFee: Number, total: Number,
   status: { type: String, default: 'new' },
 }, { timestamps: true }));
+
+const Meta = mongoose.model('Meta', new mongoose.Schema({ key: String, value: Number }));
+const SEED_VERSION = 2; // bump when shared/menu.json gets new items: they are added once on the next start
 
 let useMongo = false;
 let nextId = 1;
@@ -67,15 +71,14 @@ const ah = fn => (q, s, n) => Promise.resolve(fn(q, s, n)).catch(n); // forward 
 const found = o => { if (!o) throw new HttpError(404, 'Not found'); return o; };
 
 const TOKEN_TTL = 12 * 60 * 60 * 1000;
-const tokens = new Map(); // token -> expiry timestamp
+const TOKEN_SECRET = `masterfoods|${ADMIN_PASSWORD}|${process.env.MONGO_URI || ''}`;
 const auth = (q, s, n) => {
-  const exp = tokens.get(q.headers['x-token']);
-  if (exp && exp > Date.now()) return n();
+  if (verifyToken(TOKEN_SECRET, q.headers['x-token'])) return n();
   s.status(401).json({ error: 'Unauthorized' });
 };
 
 // ---------- Public API ----------
-app.get('/api/health', (_q, s) => s.json({ ok: true, db: useMongo ? 'mongodb' : 'memory' }));
+app.get('/api/health', (_q, s) => s.json({ ok: true, db: useMongo ? 'mongodb' : 'memory', adminPassword: unquote(process.env.ADMIN_PASSWORD) ? 'custom' : 'default' }));
 app.get('/api/settings', (_q, s) => s.json({ deliveryFee: DELIVERY_FEE }));
 app.get('/api/menu', ah(async (_q, s) => s.json(await db.list('menu'))));
 
@@ -133,10 +136,8 @@ app.post('/api/bookings', ah(async (q, s) => {
 
 // ---------- Admin API ----------
 app.post('/api/login', (q, s) => {
-  if (q.body?.password !== ADMIN_PASSWORD) return s.status(401).json({ error: 'Wrong password' });
-  const t = crypto.randomUUID();
-  tokens.set(t, Date.now() + TOKEN_TTL);
-  s.json({ token: t });
+  if (String(q.body?.password ?? '').trim() !== ADMIN_PASSWORD) return s.status(401).json({ error: 'Wrong password' });
+  s.json({ token: makeToken(TOKEN_SECRET, TOKEN_TTL) });
 });
 
 app.get('/api/admin/orders', auth, ah(async (_q, s) => s.json(await db.list('orders'))));
@@ -180,6 +181,14 @@ app.use((err, _q, s, _n) => {
 app.listen(PORT, () => console.log(`API ready on http://localhost:${PORT}`));
 mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/masterfoods', { serverSelectionTimeoutMS: 10000 }).then(async () => {
   useMongo = true;
+  const seeded = await Meta.findOne({ key: 'seedVersion' });
   if (!(await Menu.countDocuments())) await Menu.insertMany(SEED_MENU);
+  else if ((seeded?.value ?? 1) < SEED_VERSION) {
+    // add menu items that are new in shared/menu.json (once; items deleted later in the admin stay deleted)
+    const have = new Set((await Menu.find({}, 'name cat').lean()).map(m => `${m.cat}|${m.name}`));
+    const fresh = SEED_MENU.filter(m => !have.has(`${m.cat}|${m.name}`));
+    if (fresh.length) await Menu.insertMany(fresh);
+  }
+  await Meta.updateOne({ key: 'seedVersion' }, { value: SEED_VERSION }, { upsert: true });
   console.log('MongoDB connected');
 }).catch(err => console.log(`MongoDB not connected (${err.message}) -> using in-memory demo data (resets on restart)`));

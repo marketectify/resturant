@@ -17,6 +17,7 @@ export default function MenuPage() {
   }), [menu, cats]);
 
   const [active, setActive] = useState(null);
+  const [catsOpen, setCatsOpen] = useState(false);
   const [glide, setGlide] = useState(null);
   const pills = useRef(null);
   const msearch = useRef(null);
@@ -96,6 +97,7 @@ export default function MenuPage() {
   }, [current]);
 
   const go = useCallback(c => {
+    setCatsOpen(false);
     setActive(c);
     lock.current = Date.now() + 3000; // safety net; normally released as soon as the scrolling stops
     document.getElementById(`cat-${slug(c)}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -114,6 +116,20 @@ export default function MenuPage() {
     return () => { window.removeEventListener('scroll', onScroll); clearTimeout(t); };
   }, []);
 
+  // Clicking the logo in the top bar opens the all-categories sheet.
+  useEffect(() => {
+    const open = () => setCatsOpen(true);
+    window.addEventListener('open-cats', open);
+    return () => window.removeEventListener('open-cats', open);
+  }, []);
+  useEffect(() => {
+    if (!catsOpen) return undefined;
+    const onKey = e => e.key === 'Escape' && setCatsOpen(false);
+    window.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+  }, [catsOpen]);
+
   return (
     <>
       <Header />
@@ -129,11 +145,26 @@ export default function MenuPage() {
               <button key={c} role="tab" aria-selected={c === current} className={`pill${c === current ? ' on' : ''}`} onClick={() => go(c)}>{c}</button>
             ))}
         </div>
-        <button className="pill-next" onClick={() => pills.current?.scrollBy({ left: 420, behavior: 'smooth' })} aria-label="Scroll categories">
+        <button className="pill-next" onClick={() => setCatsOpen(true)} aria-label="All categories">
           <Icon name="chevron-right" size={24} />
         </button>
       </nav>
       <CartFab />
+
+      {menu !== null && (
+        <section className="top-cats" aria-label="Top categories">
+          <h2>Top categories</h2>
+          <div className="top-cats-grid">
+            {sections.slice(0, 4).map(s => (
+              <button key={s.cat} className="top-cat" onClick={() => go(s.cat)}>
+                <span className="top-cat-emoji" aria-hidden="true">{s.art[0]}</span>
+                <b>{s.cat}</b>
+                <small>{s.items.length} items</small>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
 
       <main>
         {menu === null ? (
@@ -150,6 +181,23 @@ export default function MenuPage() {
           </section>
         ))}
       </main>
+
+      {catsOpen && (
+        <div className="cats-overlay" onClick={() => setCatsOpen(false)}>
+          <div className="cats-sheet" role="dialog" aria-modal="true" aria-label="All categories" onClick={e => e.stopPropagation()}>
+            <div className="cats-head"><h3>All categories</h3><button onClick={() => setCatsOpen(false)} aria-label="Close"><Icon name="close" size={18} stroke={2.6} /></button></div>
+            <div className="cats-grid">
+              {sections.map(s => (
+                <button key={s.cat} className={`top-cat${s.cat === current ? ' on' : ''}`} onClick={() => go(s.cat)}>
+                  <span className="top-cat-emoji" aria-hidden="true">{s.art[0]}</span>
+                  <b>{s.cat}</b>
+                  <small>{s.items.length} items</small>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
       <MenuFloaters />

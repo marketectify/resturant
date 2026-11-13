@@ -20,7 +20,7 @@ export default function Header() {
         <span className="ic"><Icon name="phone" size={20} /></span>
         <span className="phone-num">{BIZ.phone}</span>
       </a>
-      <a className="logo" href="#/" aria-label={`${BIZ.short} home`}><Logo /></a>
+      <a className="logo" href="#/" aria-label={`${BIZ.short} - all categories`} onClick={e => { const h = location.hash; if (!h || h === '#' || h === '#/') { e.preventDefault(); window.dispatchEvent(new Event('open-cats')); } }}><Logo /></a>
       <nav className="top-links">
         <button className="head-search" onClick={() => setSearchOpen(true)} aria-label="Search the menu"><Icon name="search" size={22} /><span className="hide-sm">Search</span></button>
         <a className="track-link" href="#/track">Track<span className="hide-sm">&nbsp;Order</span></a>

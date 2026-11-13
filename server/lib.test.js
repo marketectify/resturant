@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HttpError, clean, findOrderForTracking, normalizeOrderType, normalizePhone, priceOrder } from './lib.js';
+import { HttpError, clean, findOrderForTracking, normalizeOrderType, makeToken, normalizePhone, priceOrder, verifyToken } from './lib.js';
 
 const menu = [
   { _id: '1', name: 'Chicken Tikka Chest', price: 540 },
@@ -62,4 +62,13 @@ test('clean', () => {
   assert.equal(clean('  hi  '), 'hi');
   assert.equal(clean('abcdef', 3), 'abc');
   assert.equal(clean({ a: 1 }), '');
+});
+
+test('admin tokens: valid, expired, tampered, wrong secret', () => {
+  const t = makeToken('s3cret', 1000, 5000);
+  assert.equal(verifyToken('s3cret', t, 5500), true);
+  assert.equal(verifyToken('s3cret', t, 6001), false);
+  assert.equal(verifyToken('other', t, 5500), false);
+  assert.equal(verifyToken('s3cret', t.replace(/^\d/, d => String((Number(d) + 1) % 10)), 5500), false);
+  for (const bad of [undefined, null, '', 'x', '123.', '.abc', 42]) assert.equal(verifyToken('s3cret', bad, 5500), false);
 });

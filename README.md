@@ -68,3 +68,11 @@ When the built site is on plain static hosting there is no `/api`, so `client/sr
 3. Open `https://<your-domain>/api/health`. `{"ok":true,"db":"mongodb"}` means orders are stored in MongoDB; `"db":"memory"` means the connection failed (the Hostinger logs show why).
 
 The Express server serves the built site and the API from the same address, so no extra setup is needed. The first start fills the menu from `shared/menu.json`.
+
+## Admin login
+
+Password is the `ADMIN_PASSWORD` environment variable (default `master123` when it is not set). Stray spaces or quotes around the value are ignored. After changing the variable in Hostinger, redeploy / restart the app. `/api/health` shows `"adminPassword":"custom"` or `"default"` so you can tell which one is active. Login tokens are signed, so a restart does not log you out.
+
+## Adding menu items
+
+New items added to `shared/menu.json` are inserted into MongoDB once on the next start (bump `SEED_VERSION` in `server/index.js`). Items deleted later in the admin panel stay deleted.

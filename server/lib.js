@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 // Pure helpers (no I/O) so they can be unit-tested with `npm test`.
 
 export class HttpError extends Error {
@@ -59,4 +61,21 @@ export function priceOrder(items, menu, deliveryFee) {
   const list = [...lines.values()];
   const subtotal = list.reduce((sum, l) => sum + l.price * l.qty, 0);
   return { items: list, subtotal, deliveryFee, total: subtotal + deliveryFee };
+}
+
+/**
+ * Stateless admin tokens ("<expiry>.<signature>"): they survive a server restart and work when the host
+ * runs more than one process, which an in-memory token list cannot do.
+ */
+export function makeToken(secret, ttlMs, now = Date.now()) {
+  const exp = String(now + ttlMs);
+  return `${exp}.${crypto.createHmac('sha256', secret).update(exp).digest('hex')}`;
+}
+
+export function verifyToken(secret, token, now = Date.now()) {
+  if (typeof token !== 'string') return false;
+  const [exp, sig = ''] = token.split('.');
+  if (!/^\d+$/.test(exp) || Number(exp) <= now) return false;
+  const want = crypto.createHmac('sha256', secret).update(exp).digest('hex');
+  return sig.length === want.length && crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(want));
 }

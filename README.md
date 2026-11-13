@@ -76,3 +76,5 @@ Password is the `ADMIN_PASSWORD` environment variable (default `master123` when 
 ## Adding menu items
 
 New items added to `shared/menu.json` are inserted into MongoDB once on the next start (bump `SEED_VERSION` in `server/index.js`). Items deleted later in the admin panel stay deleted.
+
+Run `node scripts/photos.mjs` to see which items still need a photo. Photos can be .jpg, .webp, .png or .jpeg.

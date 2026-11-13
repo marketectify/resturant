@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { stockPhoto } from '../photos.js';
 
 // Item picture. Order of preference:
 //   1. `img` set on the item (admin form / menu.json)
 //   2. a photo dropped into client/public/menu/<item-name-as-slug>.jpg (.webp, .png or .jpeg also work)
-//   3. a tinted tile with the item's emoji, so nothing ever shows a broken image
+//   3. a free stock photo that matches the dish (photos.js)
+//   4. a tinted tile with the item's emoji, so nothing ever shows a broken image
 const hue = s => [...String(s || '')].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
 const EXTS = ['jpg', 'webp', 'png', 'jpeg'];
 const slug = name => String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -34,7 +36,7 @@ function Tile({ item, className }) {
 
 export default function Thumb({ item, className = '' }) {
   const [, tick] = useState(0);
-  const [tried, setTried] = useState(0); // probing only: extensions that failed so far
+  const [fail, setFail] = useState(0); // how many sources in the list have failed to load
   useEffect(() => {
     if (manifest !== undefined) return undefined;
     listeners.add(() => tick(n => n + 1));
@@ -42,12 +44,17 @@ export default function Thumb({ item, className = '' }) {
     return undefined;
   }, []);
 
-  if (item.img) return <img className={`thumb ${className}`} src={item.img} alt="" loading="lazy" onError={e => { e.currentTarget.style.display = 'none'; }} />;
-  if (manifest === undefined) return <Tile item={item} className={className} />;
-  if (manifest) {
+  if (manifest === undefined && !item.img) return <Tile item={item} className={className} />;
+  const stock = stockPhoto(item);
+  let sources;
+  if (item.img) sources = [item.img];
+  else if (manifest) {
     const ext = EXTS.find(x => manifest.has(`${slug(item.name)}.${x}`));
-    return ext ? <img className={`thumb ${className}`} src={photoPath(item.name, ext)} alt="" loading="lazy" /> : <Tile item={item} className={className} />;
-  }
-  if (tried < EXTS.length) return <img className={`thumb ${className}`} src={photoPath(item.name, EXTS[tried])} alt="" loading="lazy" onError={() => setTried(n => n + 1)} />;
-  return <Tile item={item} className={className} />;
+    sources = [ext && photoPath(item.name, ext), stock];
+  } else sources = [...EXTS.map(x => photoPath(item.name, x)), stock];
+  sources = sources.filter(Boolean);
+
+  const src = sources[fail];
+  if (!src) return <Tile item={item} className={className} />;
+  return <img className={`thumb ${className}`} src={src} alt="" loading="lazy" referrerPolicy="no-referrer" onError={() => setFail(n => n + 1)} />;
 }

@@ -19,6 +19,8 @@ export default function MenuPage() {
   const [active, setActive] = useState(null);
   const [glide, setGlide] = useState(null);
   const pills = useRef(null);
+  const msearch = useRef(null);
+  const { setSearchOpen } = useStore();
   const lock = useRef(0); // while a click-scroll is running the scroll listener must not change the tab
   const current = active && cats.includes(active) ? active : cats[0];
 
@@ -62,6 +64,17 @@ export default function MenuPage() {
     return () => { ro?.disconnect(); window.removeEventListener('resize', place); };
   }, [current, cats]);
 
+  // Phone: the search bar sits under the header and scrolls away; once it is out of sight a round
+  // search button appears bottom-left (like the WhatsApp one on the right).
+  useEffect(() => {
+    const el = msearch.current;
+    if (!el || !('IntersectionObserver' in window)) return undefined;
+    const top = document.querySelector('.topbar')?.offsetHeight || 0;
+    const io = new IntersectionObserver(([e]) => document.documentElement.classList.toggle('m-search-out', !e.isIntersecting), { rootMargin: `-${top}px 0px 0px 0px` });
+    io.observe(el);
+    return () => { io.disconnect(); document.documentElement.classList.remove('m-search-out'); };
+  }, [menu]);
+
   // Cards fade up as they scroll into view.
   useEffect(() => {
     if (!menu || !('IntersectionObserver' in window)) return undefined;
@@ -104,6 +117,9 @@ export default function MenuPage() {
   return (
     <>
       <Header />
+      <button className="m-search" ref={msearch} onClick={() => setSearchOpen(true)} aria-label="Search the menu">
+        <Icon name="search" size={20} /> <span>Search biryani, burger, karahi…</span>
+      </button>
       <nav className="pillbar" aria-label="Menu categories">
         <div className="pills" ref={pills} role="tablist">
           {glide && <span className={`pill-glide ready`} style={glide} aria-hidden="true" />}

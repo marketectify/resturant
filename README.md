@@ -78,3 +78,6 @@ Password is the `ADMIN_PASSWORD` environment variable (default `master123` when 
 New items added to `shared/menu.json` are inserted into MongoDB once on the next start (bump `SEED_VERSION` in `server/index.js`). Items deleted later in the admin panel stay deleted.
 
 Run `node scripts/photos.mjs` to see which items still need a photo. Photos can be .jpg, .webp, .png or .jpeg.
+
+## Photo credits
+Menu photos without a local file are hot-linked from Unsplash (map by name/category in `client/src/photos.js`). Photographers: Nathan Dumlao, Mario Raj, Yubraj Timsina, Eugene Krasnaok, tommao wang, Z Grills Australia, Hamid Roshaan, Frank from 5 AM Ramen, joe boshra, Zayed Ahmed Zadu, Durenne Loris, You Le, nrd, ShengGeng Lin. Real restaurant photos placed in `client/public/menu/<slug>.jpg` take priority.

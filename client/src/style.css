@@ -580,3 +580,63 @@ small { display: block; color: var(--mut); font-size: 12px; margin-top: 2px; }
   .search-fab { opacity: 0; transform: scale(.5); pointer-events: none; transition: opacity .25s ease, transform .3s cubic-bezier(.3, 1.5, .5, 1); }
   html.m-search-out .search-fab { opacity: 1; transform: none; pointer-events: auto; }
 }
+
+
+/* ===== Top categories, categories sheet, no image backgrounds, black & white page bg, compact phone popup ===== */
+body::before { filter: grayscale(1); }
+
+.top-cats { width: var(--wrap); margin: 22px auto 0; }
+.top-cats h2 { margin-bottom: 12px; font-size: 20px; font-weight: 700; letter-spacing: -.3px; }
+.top-cats-grid, .cats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.top-cat { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 16px 10px 14px; background: #fff; border-radius: 22px; box-shadow: 0 2px 12px #0000000f; text-align: center; transition: transform .25s cubic-bezier(.3, 1.4, .5, 1), box-shadow .25s; }
+.top-cat:hover { transform: translateY(-4px); box-shadow: 0 10px 24px #0000001f; }
+.top-cat.on { outline: 2px solid var(--red); }
+.top-cat-emoji { font-size: 52px; line-height: 1.1; filter: drop-shadow(0 8px 8px #0003); }
+.top-cat b { font-size: 15px; font-weight: 600; }
+.top-cat small { color: #777; font-size: 12px; }
+.cats-overlay { position: fixed; inset: 0; z-index: 110; display: grid; place-items: center; padding: 20px; background: #0000007a; backdrop-filter: blur(6px); animation: pmFade .2s ease-out; }
+.cats-sheet { width: min(760px, 100%); max-height: calc(100dvh - 40px); overflow-y: auto; padding: 20px; background: #fff; border-radius: 26px; box-shadow: 0 30px 80px #0006; animation: pmPop .3s cubic-bezier(.2, .9, .3, 1.15); }
+.cats-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.cats-head h3 { font-size: 20px; }
+.cats-head button { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: #f1f1f3; }
+.cats-grid { grid-template-columns: repeat(4, 1fr); }
+.cats-grid .top-cat { background: #f6f6f8; box-shadow: none; padding: 12px 6px; }
+.cats-grid .top-cat-emoji { font-size: 38px; }
+
+/* no coloured circles / tiles behind pictures */
+.thumb, .card-img span.thumb, .pm-img, .pm-mini .thumb { background: none !important; }
+.banner-art::before { display: none; }
+.card-img img.thumb { border: 0; border-radius: 22px; }
+.pm-img img.thumb { border-radius: 0; }
+
+@media (max-width: 700px) {
+  .top-cats { margin-top: 12px; }
+  .top-cats h2 { font-size: 17px; }
+  .top-cats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .top-cat { display: grid; grid-template-columns: 40px 1fr; grid-template-rows: auto auto; align-content: center; justify-items: start; align-items: center; gap: 0 10px; padding: 10px 12px; text-align: left; border-radius: 18px; }
+  .top-cat-emoji { font-size: 34px; grid-row: 1 / 3; justify-self: center; }
+  .top-cat b { font-size: 13px; line-height: 1.2; align-self: end; }
+  .top-cat small { align-self: start; }
+  .cats-overlay { align-items: end; padding: 0; }
+  .cats-sheet { width: 100%; max-height: 80dvh; padding: 16px; border-radius: 22px 22px 0 0; animation-name: pmSheet; }
+  .cats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+  /* smaller, tidier detail sheet */
+  .pm { grid-template-rows: 130px auto; max-height: 68dvh; border-radius: 22px 22px 0 0; }
+  .pm-img { background: #f6f6f8 !important; }
+  .pm-img .thumb-emoji { font-size: 96px; animation: none; }
+  .pm-close { top: 10px; right: 10px; width: 32px; height: 32px; }
+  .pm-badge { left: 12px; top: 12px; font-size: 11px; padding: 3px 10px; }
+  .pm-body { gap: 7px; padding: 14px 16px 12px; }
+  .pm h2 { font-size: 18px; padding-right: 0; }
+  .pm-price { font-size: 18px; }
+  .pm-desc { font-size: 13px; }
+  .pm-details { font-size: 12.5px; }
+  .pm-facts, .pm-cat { display: none; }
+  .pm-deal { padding: 8px 10px; }
+  .pm-pair h3 { margin-bottom: 4px; font-size: 13px; }
+  .pm-mini { width: 96px; padding: 6px; }
+  .pm-mini .thumb { height: 44px; }
+  .pm-foot { bottom: -12px; gap: 10px; padding-top: 10px; }
+  .pm-add { height: 44px; font-size: 14px; padding: 0 16px; }
+}

@@ -85,3 +85,6 @@ Menu photos without a local file are hot-linked from Unsplash (map by name/categ
 ## Link preview, favicon, admin
 - Favicon and app icons: `client/public/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `icon-*.png`. WhatsApp/Facebook link preview image: `client/public/og-image.jpg` (1200x630); tags are in `client/index.html` and point to `https://masterfoods.marketectify.com` (change that domain there if the site moves). WhatsApp caches previews, so a new link or a re-share may be needed after changes.
 - Admin panel: Menu tab is a table with an Action column (edit / delete icons); Categories tab creates, renames and deletes categories (a category can only be deleted when it has no items).
+
+## Welcome screen (name + location)
+On a customer's first visit a welcome card asks for a name and (optionally) their location (browser permission) and area. It is saved in the browser (`mf-profile`, also pre-fills checkout) and POSTed to `/api/visitors`; the admin sees it under **Customers** with a Google Maps link. Limited to 10 submissions per hour per IP.

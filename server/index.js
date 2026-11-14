@@ -25,6 +25,7 @@ const SEED_MENU = JSON.parse(fs.readFileSync(new URL('../shared/menu.json', impo
 
 const Menu = mongoose.model('Menu', new mongoose.Schema({ name: String, desc: String, price: Number, cat: String, emoji: String, badge: String, img: String, details: String, deal: String }));
 const Category = mongoose.model('Category', new mongoose.Schema({ name: String, emoji: String }));
+const Visitor = mongoose.model('Visitor', new mongoose.Schema({ name: String, lat: Number, lng: Number, accuracy: Number, address: String }, { timestamps: true }));
 const Booking = mongoose.model('Booking', new mongoose.Schema({ name: String, phone: String, date: String, time: String, guests: Number, note: String, status: { type: String, default: 'pending' } }, { timestamps: true }));
 const Order = mongoose.model('Order', new mongoose.Schema({
   orderNo: String, orderType: { type: String, default: 'delivery' }, payment: { type: String, default: 'cod' }, title: String, name: String, phone: String, altPhone: String, email: String,
@@ -39,8 +40,8 @@ const SEED_VERSION = 2; // bump when shared/menu.json gets new items: they are a
 
 let useMongo = false;
 let nextId = 1;
-const models = { menu: Menu, bookings: Booking, orders: Order, categories: Category };
-const mem = { menu: [], bookings: [], orders: [], categories: [] };
+const models = { menu: Menu, bookings: Booking, orders: Order, categories: Category, visitors: Visitor };
+const mem = { menu: [], bookings: [], orders: [], categories: [], visitors: [] };
 mem.menu = SEED_MENU.map(d => ({ ...d, _id: String(nextId++) }));
 
 const db = {
@@ -140,6 +141,25 @@ app.post('/api/login', (q, s) => {
   if (String(q.body?.password ?? '').trim() !== ADMIN_PASSWORD) return s.status(401).json({ error: 'Wrong password' });
   s.json({ token: makeToken(TOKEN_SECRET, TOKEN_TTL) });
 });
+
+// Welcome screen: the customer gives a name and (optionally) their location; it shows up in the admin panel.
+const visitHits = new Map(); // ip -> { n, reset }: at most 10 per hour per IP
+app.post('/api/visitors', ah(async (q, s) => {
+  const now = Date.now();
+  const h = visitHits.get(q.ip);
+  if (!h || h.reset < now) visitHits.set(q.ip, { n: 1, reset: now + 3_600_000 });
+  else if (++h.n > 10) throw new HttpError(429, 'Too many requests, please try again later');
+  const b = q.body ?? {};
+  const name = clean(b.name, 80);
+  if (!name) throw new HttpError(400, 'Please enter your name');
+  const lat = Number(b.lat); const lng = Number(b.lng);
+  const hasGeo = b.lat != null && b.lng != null && Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180;
+  const acc = Number(b.accuracy);
+  const v = await db.add('visitors', { name, address: clean(b.address, 200), ...(hasGeo && { lat, lng, accuracy: Number.isFinite(acc) ? Math.round(acc) : undefined }) });
+  s.status(201).json({ id: String(v._id) });
+}));
+app.get('/api/admin/visitors', auth, ah(async (_q, s) => s.json(await db.list('visitors'))));
+app.delete('/api/admin/visitors/:id', auth, ah(async (q, s) => s.json(found(await db.del('visitors', q.params.id)))));
 
 app.get('/api/admin/orders', auth, ah(async (_q, s) => s.json(await db.list('orders'))));
 app.patch('/api/admin/orders/:id', auth, ah(async (q, s) => {

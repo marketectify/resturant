@@ -13,6 +13,7 @@ const when = d => new Date(d).toLocaleString('en-GB', { day: '2-digit', month: '
 const ico = d => <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{d}</svg>;
 const EditIc = ico(<path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4zM13.5 6.5l4 4" />);
 const TrashIc = ico(<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" />);
+const MapIc = ico(<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21zM12 12a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />);
 const CheckIc = ico(<path d="m5 12.5 4.5 4.5L19 7.5" />);
 const XIc = ico(<path d="M6 6l12 12M18 6 6 18" />);
 const EMPTY_ITEM = { name: '', desc: '', price: '', cat: '', emoji: '', badge: '', img: '', details: '', deal: '' };
@@ -49,6 +50,7 @@ export default function Admin() {
   const [bookings, setBookings] = useState([]);
   const [menu, setMenu] = useState([]);
   const [cats, setCats] = useState([]);
+  const [visitors, setVisitors] = useState([]);
   const [form, setForm] = useState(null); // item being added (no _id) or edited
   const [catForm, setCatForm] = useState(null);
   const [filter, setFilter] = useState('');
@@ -58,8 +60,8 @@ export default function Admin() {
   const logout = useCallback(() => { store.set(null); setToken(null); }, []);
   const load = useCallback(async () => {
     try {
-      const [o, b, m, c] = await Promise.all([api('/api/admin/orders', { token }), api('/api/admin/bookings', { token }), api('/api/menu'), api('/api/admin/categories', { token })]);
-      setOrders(o); setBookings(b); setMenu(m); setCats(c);
+      const [o, b, m, c, v] = await Promise.all([api('/api/admin/orders', { token }), api('/api/admin/bookings', { token }), api('/api/menu'), api('/api/admin/categories', { token }), api('/api/admin/visitors', { token })]);
+      setOrders(o); setBookings(b); setMenu(m); setCats(c); setVisitors(v);
     } catch (e) { if (e.status === 401) logout(); else setMsg(e.offline ? 'Server is not connected.' : e.message); }
   }, [token, logout]);
   useEffect(() => { if (token) load(); }, [token, load]);
@@ -87,7 +89,7 @@ export default function Admin() {
   };
 
   const shown = menu.filter(m => (!filter || m.cat === filter) && (!q || `${m.name} ${m.cat}`.toLowerCase().includes(q.toLowerCase())));
-  const tabs = [['orders', `Orders (${orders.length})`], ['bookings', `Bookings (${bookings.length})`], ['menu', `Menu (${menu.length})`], ['cats', `Categories (${cats.length})`]];
+  const tabs = [['orders', `Orders (${orders.length})`], ['bookings', `Bookings (${bookings.length})`], ['menu', `Menu (${menu.length})`], ['cats', `Categories (${cats.length})`], ['visitors', `Customers (${visitors.length})`]];
 
   return (
     <div className="adm">
@@ -193,6 +195,36 @@ export default function Admin() {
                   </td>
                 </tr>
               ))}
+            </tbody>
+          </table></div>
+        </>
+      )}
+
+      {tab === 'visitors' && (
+        <>
+          <p className="muted-l" style={{ marginBottom: 12 }}>Customers who gave their name (and location) on the welcome screen.</p>
+          <div className="tw"><table>
+            <thead><tr><th>Name</th><th>Location</th><th>When</th><th className="act">Action</th></tr></thead>
+            <tbody>
+              {visitors.length === 0 && <tr><td colSpan="4" className="muted">No customers yet.</td></tr>}
+              {visitors.map(v => {
+                const geo = Number.isFinite(v.lat) && Number.isFinite(v.lng);
+                return (
+                  <tr key={v._id}>
+                    <td><b>{v.name}</b></td>
+                    <td>
+                      {geo ? <a className="map-link" href={`https://www.google.com/maps?q=${v.lat},${v.lng}`} target="_blank" rel="noreferrer">{MapIc} Open in Google Maps</a> : <small>Not shared</small>}
+                      {geo && <small>{v.lat.toFixed(5)}, {v.lng.toFixed(5)}{v.accuracy ? ` · ±${v.accuracy} m` : ''}</small>}
+                      {v.address && <small>{v.address}</small>}
+                    </td>
+                    <td>{when(v.createdAt)}</td>
+                    <td className="act">
+                      {geo && <a className="icon-btn" href={`https://www.google.com/maps?q=${v.lat},${v.lng}`} target="_blank" rel="noreferrer" aria-label={`Open ${v.name} on the map`} title="Map">{MapIc}</a>}
+                      <button className="icon-btn danger" onClick={() => del('visitors', v._id, v.name)} aria-label={`Delete ${v.name}`} title="Delete">{TrashIc}</button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table></div>
         </>

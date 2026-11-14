@@ -827,3 +827,53 @@ body { background: var(--bg); padding-bottom: 96px; }
 .adm .st { background: var(--soft); color: var(--ink); }
 .adm .st.confirmed { background: #c9f3d2; }
 .adm .st.cancelled { background: #ffd0d0; }
+
+
+/* ===== Real photos only (no cartoon tiles), category cards with border, blurred detail backdrop ===== */
+.thumb-blank { background: linear-gradient(145deg, #f4f4f6, #e6e6ea) !important; color: #b4b4bb; }
+.thumb-blank svg { width: 42%; max-width: 64px; height: auto; }
+
+/* category banner: round photos instead of cartoon emoji */
+.banner-art { gap: 0; }
+.banner-art .ba { position: relative; flex: none; width: clamp(64px, 8vw, 112px); aspect-ratio: 1; margin-left: -18px; border-radius: 50%; overflow: hidden; border: 4px solid #fff; box-shadow: 0 12px 26px #0003; font-size: 0; filter: none; animation: floaty 4.6s ease-in-out infinite; }
+.banner-art .ba:nth-child(2) { animation-duration: 5.4s; animation-delay: -1.2s; }
+.banner-art .ba:nth-child(3) { animation-duration: 6.1s; animation-delay: -2.4s; }
+.banner-art .ba.big { width: clamp(100px, 13vw, 170px); margin-left: 0; z-index: 2; animation-name: floatyBig; }
+.banner-art .ba .thumb { border-radius: 50%; border: 0; }
+.menu-sec.is-current .banner-art .ba { animation: artPop .7s cubic-bezier(.3, 1.5, .5, 1) backwards, floaty 4.6s ease-in-out .7s infinite; }
+.menu-sec.is-current .banner-art .ba.big { animation: artPop .7s cubic-bezier(.3, 1.5, .5, 1) backwards, floatyBig 4.6s ease-in-out .7s infinite; }
+
+/* category cards */
+.top-cats-grid, .cats-grid { gap: 14px; }
+.top-cat { position: relative; display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 8px 8px 12px; background: #fff; border: 1.5px solid #dcdce1; border-radius: 22px; box-shadow: none; text-align: left; overflow: hidden; transition: transform .25s cubic-bezier(.3, 1.4, .5, 1), border-color .2s, box-shadow .25s; }
+.top-cat:hover { transform: translateY(-4px); border-color: var(--ink); box-shadow: 0 12px 26px #0000001c; }
+.top-cat.on { border-color: var(--ink); outline: 0; box-shadow: inset 0 0 0 1.5px var(--ink); }
+.top-cat-img { display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 15px; background: #ececef; }
+.top-cat-img .thumb { width: 100%; height: 100%; border-radius: 0; transition: transform .5s ease; }
+.top-cat:hover .top-cat-img .thumb { transform: scale(1.08); }
+.top-cat b { margin: 10px 6px 0; font-size: 15px; font-weight: 700; line-height: 1.2; }
+.top-cat small { margin: 2px 6px 0; color: var(--mut); font-size: 12px; }
+.top-cat::after { content: '→'; position: absolute; right: 14px; bottom: 11px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--dark); color: #fff; font-size: 14px; opacity: 0; transform: translateX(-6px); transition: opacity .2s, transform .2s; }
+.top-cat:hover::after { opacity: 1; transform: none; }
+.cats-grid .top-cat { background: #fff; padding: 6px 6px 10px; }
+.cats-grid .top-cat b { font-size: 13.5px; }
+@media (max-width: 700px) {
+  .top-cats-grid, .cats-grid { gap: 10px; }
+  .top-cat { display: flex; padding: 6px 6px 10px; border-radius: 18px; }
+  .top-cat b { font-size: 13.5px; margin-top: 8px; }
+  .top-cat small { padding-left: 0; margin-top: 1px; }
+  .top-cat::after { opacity: 1; transform: none; width: 24px; height: 24px; right: 10px; bottom: 9px; font-size: 12px; }
+}
+
+/* detail card: soft blurred copy of the photo behind the round plate, frosted sheet on top */
+.pm-hero { overflow: hidden; }
+.pm-blur { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: #e9e9ec; }
+.pm-blur .thumb { width: 100%; height: 100%; transform: scale(1.5); filter: blur(30px) saturate(1.25); opacity: .75; border-radius: 0; }
+.pm-blur::after { content: ''; position: absolute; inset: 0; background: linear-gradient(#ffffff40, #efeff1 96%); }
+.pm-plate { z-index: 2; border: 5px solid #ffffffcc; }
+.pm-sheet { background: #ffffffd9; backdrop-filter: blur(22px) saturate(1.4); -webkit-backdrop-filter: blur(22px) saturate(1.4); box-shadow: 0 -10px 40px #0000001a; }
+.top-cat b, .top-cat small { align-self: flex-start; text-align: left; }
+@media (max-width: 700px) {
+  .banner-art .ba { width: 54px; margin-left: -14px; border-width: 3px; }
+  .banner-art .ba.big { width: 88px; margin-left: 0; }
+}

@@ -5,7 +5,7 @@ import { stockPhoto } from '../photos.js';
 //   1. `img` set on the item (admin form / menu.json)
 //   2. a photo dropped into client/public/menu/<item-name-as-slug>.jpg (.webp, .png or .jpeg also work)
 //   3. a free stock photo that matches the dish (photos.js)
-//   4. a tinted tile with the item's emoji, so nothing ever shows a broken image
+//   4. a plain neutral tile (no cartoons), so nothing ever shows a broken image
 const hue = s => [...String(s || '')].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
 const EXTS = ['jpg', 'webp', 'png', 'jpeg'];
 const slug = name => String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -28,8 +28,8 @@ function loadManifest() {
 
 function Tile({ item, className }) {
   return (
-    <span className={`thumb ${className}`} style={{ '--h': hue(item.cat) }} aria-hidden="true">
-      <span className="thumb-emoji">{item.emoji || '🍽️'}</span>
+    <span className={`thumb thumb-blank ${className}`} style={{ '--h': hue(item.cat) }} aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 21V3c-2.5 1.5-3.5 4.5-3.5 8H17" /></svg>
     </span>
   );
 }

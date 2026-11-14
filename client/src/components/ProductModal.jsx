@@ -46,6 +46,7 @@ export default function ProductModal() {
 
         <div className="pm-scroll">
           <div className="pm-hero">
+            <div className="pm-blur" aria-hidden="true"><Thumb key={item._id} item={item} /></div>
             <div className="pm-plate"><Thumb key={item._id} item={item} /></div>
             {item.badge && <span className="pm-badge">{item.badge}</span>}
           </div>

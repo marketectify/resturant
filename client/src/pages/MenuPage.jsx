@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Header from '../components/Header.jsx';
 import Icon from '../components/Icon.jsx';
+import Thumb from '../components/Thumb.jsx';
 import ItemCard from '../components/ItemCard.jsx';
 import Footer from '../components/Footer.jsx';
 import { MenuFloaters } from '../components/Floaters.jsx';
@@ -113,7 +114,7 @@ export default function MenuPage() {
           <div className="top-cats-grid">
             {sections.slice(0, 4).map(s => (
               <button key={s.cat} className="top-cat" onClick={() => go(s.cat)}>
-                <span className="top-cat-emoji" aria-hidden="true">{s.art[0]}</span>
+                <span className="top-cat-img"><Thumb item={s.items[0]} /></span>
                 <b>{s.cat}</b>
                 <small>{s.items.length} items</small>
               </button>
@@ -130,7 +131,7 @@ export default function MenuPage() {
             <div className="cat-banner">
               <h2 id={`h-${slug(s.cat)}`}>{s.cat}</h2>
               <div className="banner-art" aria-hidden="true">
-                {s.art.map((e, i) => <span key={e} className={i === 0 ? 'big' : ''}>{e}</span>)}
+                {s.items.slice(0, 3).map((m, i) => <span key={m._id} className={`ba${i === 0 ? ' big' : ''}`}><Thumb item={m} /></span>)}
               </div>
             </div>
             <div className="menu-grid">{s.items.map(m => <ItemCard key={m._id} item={m} />)}</div>
@@ -145,7 +146,7 @@ export default function MenuPage() {
             <div className="cats-grid">
               {sections.map(s => (
                 <button key={s.cat} className={`top-cat${s.cat === current ? ' on' : ''}`} onClick={() => go(s.cat)}>
-                  <span className="top-cat-emoji" aria-hidden="true">{s.art[0]}</span>
+                  <span className="top-cat-img"><Thumb item={s.items[0]} /></span>
                   <b>{s.cat}</b>
                   <small>{s.items.length} items</small>
                 </button>

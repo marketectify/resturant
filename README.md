@@ -81,3 +81,7 @@ Run `node scripts/photos.mjs` to see which items still need a photo. Photos can 
 
 ## Photo credits
 Menu photos without a local file are hot-linked from Unsplash (map by name/category in `client/src/photos.js`). Photographers: Nathan Dumlao, Mario Raj, Yubraj Timsina, Eugene Krasnaok, tommao wang, Z Grills Australia, Hamid Roshaan, Frank from 5 AM Ramen, joe boshra, Zayed Ahmed Zadu, Durenne Loris, You Le, nrd, ShengGeng Lin. Real restaurant photos placed in `client/public/menu/<slug>.jpg` take priority.
+
+## Link preview, favicon, admin
+- Favicon and app icons: `client/public/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `icon-*.png`. WhatsApp/Facebook link preview image: `client/public/og-image.jpg` (1200x630); tags are in `client/index.html` and point to `https://masterfoods.marketectify.com` (change that domain there if the site moves). WhatsApp caches previews, so a new link or a re-share may be needed after changes.
+- Admin panel: Menu tab is a table with an Action column (edit / delete icons); Categories tab creates, renames and deletes categories (a category can only be deleted when it has no items).

@@ -796,3 +796,34 @@ body { background: var(--bg); padding-bottom: 96px; }
 /* ===== No tab bar on top: categories live in the "Top categories" cards and the All-categories sheet ===== */
 :root { --bar-h: 0px; }
 .pillbar { display: none !important; }
+
+
+/* ===== Admin: tidy tables with an Action column, add/edit forms, categories ===== */
+.adm { --red: #141416; }
+.adm-top h1 { color: var(--ink); }
+.adm-top a, .adm-top button { color: var(--ink); }
+.stats b { color: var(--ink); }
+.adm-tabs button { color: var(--ink); background: #fff; }
+.adm-tabs button.on { background: var(--dark); color: #fff; }
+.adm-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.adm-bar .btn-primary.slim { margin-left: auto; height: 44px; }
+.adm-bar input, .adm-bar select, .mf select { height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; font: inherit; font-size: 14px; background: #fff; }
+.adm-search { flex: 1 1 200px; max-width: 320px; }
+.muted-l { color: var(--mut); font-size: 14px; }
+.panel-form { margin-bottom: 16px; padding: 18px; background: #fff; border-radius: 18px; box-shadow: 0 4px 14px #0000000a; }
+.panel-form h3 { grid-column: 1 / -1; font-size: 16px; }
+.mf select { width: 100%; }
+.form-actions { grid-column: 1 / -1; display: flex; gap: 10px; }
+.form-actions .btn-primary { width: auto; padding: 0 26px; }
+.btn-cancel { height: 46px; padding: 0 22px; border-radius: 16px; background: var(--soft); font-weight: 600; }
+.adm th.act, .adm td.act { text-align: right; white-space: nowrap; width: 1%; }
+.adm tbody tr:hover { background: #fafafb; }
+.item-cell { display: flex; align-items: center; gap: 12px; }
+.item-cell > span:last-child { min-width: 0; }
+.item-ic { flex: none; width: 40px; height: 40px; display: grid; place-items: center; background: var(--soft); border-radius: 12px; font-size: 22px; }
+.adm .icon-btn { width: 34px; height: 34px; margin: 0 0 0 6px; padding: 0; display: inline-grid; place-items: center; background: var(--soft); color: var(--ink); border-radius: 10px; transition: background .15s, color .15s; }
+.adm .icon-btn:hover { background: var(--dark); color: #fff; }
+.adm .icon-btn.danger:hover { background: #d93a3a; }
+.adm .st { background: var(--soft); color: var(--ink); }
+.adm .st.confirmed { background: #c9f3d2; }
+.adm .st.cancelled { background: #ffd0d0; }

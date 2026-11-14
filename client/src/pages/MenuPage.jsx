@@ -3,7 +3,7 @@ import Header from '../components/Header.jsx';
 import Icon from '../components/Icon.jsx';
 import ItemCard from '../components/ItemCard.jsx';
 import Footer from '../components/Footer.jsx';
-import { CartFab, MenuFloaters } from '../components/Floaters.jsx';
+import { MenuFloaters } from '../components/Floaters.jsx';
 import { useStore } from '../store.jsx';
 
 const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -18,8 +18,6 @@ export default function MenuPage() {
 
   const [active, setActive] = useState(null);
   const [catsOpen, setCatsOpen] = useState(false);
-  const [glide, setGlide] = useState(null);
-  const pills = useRef(null);
   const msearch = useRef(null);
   const { setSearchOpen } = useStore();
   const lock = useRef(0); // while a click-scroll is running the scroll listener must not change the tab
@@ -30,7 +28,7 @@ export default function MenuPage() {
     if (!cats.length) return undefined;
     const spy = () => {
       if (Date.now() < lock.current) return;
-      const line = (document.querySelector('.pillbar')?.getBoundingClientRect().bottom ?? 130) + 24; // below the fixed header
+      const line = (document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 70) + 24; // below the fixed header
       let now = cats[0];
       for (const c of cats) {
         const el = document.getElementById(`cat-${slug(c)}`);
@@ -44,26 +42,6 @@ export default function MenuPage() {
     window.addEventListener('resize', spy);
     return () => { window.removeEventListener('scroll', spy); window.removeEventListener('resize', spy); };
   }, [cats]);
-
-  // White highlight that slides under the active tab. Re-measured whenever any tab changes size
-  // (web fonts finishing loading, window resize), so it can never drift away from its tab.
-  useEffect(() => {
-    const bar = pills.current;
-    if (!bar) return undefined;
-    const place = () => {
-      const on = bar.querySelector('.pill.on');
-      if (!on) return;
-      const g = { left: on.offsetLeft, top: on.offsetTop, width: on.offsetWidth, height: on.offsetHeight };
-      setGlide(o => (o && o.left === g.left && o.top === g.top && o.width === g.width && o.height === g.height ? o : g));
-    };
-    place();
-    const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(place) : null;
-    ro?.observe(bar);
-    bar.querySelectorAll('.pill').forEach(el => ro?.observe(el));
-    document.fonts?.ready?.then(place);
-    window.addEventListener('resize', place);
-    return () => { ro?.disconnect(); window.removeEventListener('resize', place); };
-  }, [current, cats]);
 
   // Phone: the search bar sits under the header and scrolls away; once it is out of sight a round
   // search button appears bottom-left (like the WhatsApp one on the right).
@@ -87,14 +65,6 @@ export default function MenuPage() {
     root.classList.add('reveal');
     return () => { io.disconnect(); root.classList.remove('reveal'); };
   }, [menu]);
-
-  // Keep the active tab visible inside the horizontally scrolling bar (without moving the page).
-  useEffect(() => {
-    const bar = pills.current;
-    const on = bar?.querySelector('.pill.on');
-    if (!bar || !on) return;
-    bar.scrollTo({ left: on.offsetLeft - (bar.clientWidth - on.offsetWidth) / 2, behavior: 'smooth' });
-  }, [current]);
 
   const go = useCallback(c => {
     setCatsOpen(false);
@@ -136,20 +106,6 @@ export default function MenuPage() {
       <button className="m-search" ref={msearch} onClick={() => setSearchOpen(true)} aria-label="Search the menu">
         <Icon name="search" size={20} /> <span>Search biryani, burger, karahi…</span>
       </button>
-      <nav className="pillbar" aria-label="Menu categories">
-        <div className="pills" ref={pills} role="tablist">
-          {glide && <span className={`pill-glide ready`} style={glide} aria-hidden="true" />}
-          {menu === null
-            ? Array.from({ length: 8 }, (_, i) => <span key={i} className="pill skel-pill" />)
-            : cats.map(c => (
-              <button key={c} role="tab" aria-selected={c === current} className={`pill${c === current ? ' on' : ''}`} onClick={() => go(c)}>{c}</button>
-            ))}
-        </div>
-        <button className="pill-next" onClick={() => setCatsOpen(true)} aria-label="All categories">
-          <Icon name="chevron-right" size={24} />
-        </button>
-      </nav>
-      <CartFab />
 
       {menu !== null && (
         <section className="top-cats" aria-label="Top categories">

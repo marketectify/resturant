@@ -792,3 +792,7 @@ body { background: var(--bg); padding-bottom: 96px; }
 .pill-glide { box-shadow: 0 6px 14px #00000040; }
 .add, .card-foot .add, .pm-mini button { box-shadow: 0 6px 14px #00000038; }
 .cart-fab, .top-fab, .done-ic { box-shadow: 0 6px 16px #00000040; }
+
+/* ===== No tab bar on top: categories live in the "Top categories" cards and the All-categories sheet ===== */
+:root { --bar-h: 0px; }
+.pillbar { display: none !important; }

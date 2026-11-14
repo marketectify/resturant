@@ -97,6 +97,40 @@ export function demoCall(url, { method = 'GET', body, token } = {}) {
   }
 
   // ---- admin ----
+  const cm = path.match(/^\/api\/admin\/categories(?:\/([^/]+))?$/);
+  if (cm) {
+    needAdmin(token);
+    const menu = d.menu ||= [...seedMenu];
+    const cats = d.cats ||= [];
+    for (const name of [...new Set(menu.map(x => x.cat))]) if (!cats.some(c => c.name === name)) cats.push({ _id: 'c' + cats.length + Date.now(), name, emoji: menu.find(x => x.cat === name)?.emoji || '' });
+    const withCount = () => cats.map(c => ({ ...c, count: menu.filter(x => x.cat === c.name).length }));
+    if (method === 'GET') return withCount();
+    const name = clean(b.name, 40);
+    const dup = other => cats.some(c => c !== other && c.name.toLowerCase() === name.toLowerCase());
+    if (method === 'POST') {
+      if (!name) fail(400, 'Category name is required');
+      if (dup()) fail(400, 'This category already exists');
+      const c = { _id: 'c' + Date.now(), name, emoji: clean(b.emoji, 8) };
+      cats.push(c); save();
+      return c;
+    }
+    const cur = cats.find(c => c._id === cm[1]);
+    if (!cur) fail(404, 'Not found');
+    if (method === 'PATCH') {
+      if (!name) fail(400, 'Category name is required');
+      if (dup(cur)) fail(400, 'This category already exists');
+      menu.forEach(x => { if (x.cat === cur.name) x.cat = name; });
+      cur.name = name; cur.emoji = clean(b.emoji, 8); save();
+      return cur;
+    }
+    if (method === 'DELETE') {
+      const n = menu.filter(x => x.cat === cur.name).length;
+      if (n) fail(400, `This category still has ${n} item(s). Move or delete them first.`);
+      cats.splice(cats.indexOf(cur), 1); save();
+      return cur;
+    }
+  }
+
   const m = path.match(/^\/api\/admin\/(orders|bookings|menu)(?:\/([^/]+))?$/);
   if (m) {
     needAdmin(token);
@@ -111,6 +145,12 @@ export function demoCall(url, { method = 'GET', body, token } = {}) {
     }
     const idx = list.findIndex(x => x._id === id);
     if (idx < 0) fail(404, 'Not found');
+    if (method === 'PATCH' && kind === 'menu') {
+      const item = { name: clean(b.name, 80), desc: clean(b.desc, 120), price: Number(b.price), cat: clean(b.cat, 40), emoji: clean(b.emoji, 8), badge: clean(b.badge, 30), img: clean(b.img, 500), details: clean(b.details, 600), deal: clean(b.deal, 200) };
+      if (!item.name || !item.cat || !Number.isFinite(item.price) || item.price < 0) fail(400, 'Name, category and a valid price are required');
+      Object.assign(list[idx], item); save();
+      return list[idx];
+    }
     if (method === 'PATCH') {
       const ok = kind === 'orders' ? ORDER_STATUSES : BOOKING_STATUSES;
       if (!ok.includes(b.status)) fail(400, 'Invalid status');

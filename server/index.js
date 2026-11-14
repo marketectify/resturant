@@ -24,6 +24,7 @@ app.use(cors(), express.json({ limit: '50kb' }));
 const SEED_MENU = JSON.parse(fs.readFileSync(new URL('../shared/menu.json', import.meta.url), 'utf8'));
 
 const Menu = mongoose.model('Menu', new mongoose.Schema({ name: String, desc: String, price: Number, cat: String, emoji: String, badge: String, img: String, details: String, deal: String }));
+const Category = mongoose.model('Category', new mongoose.Schema({ name: String, emoji: String }));
 const Booking = mongoose.model('Booking', new mongoose.Schema({ name: String, phone: String, date: String, time: String, guests: Number, note: String, status: { type: String, default: 'pending' } }, { timestamps: true }));
 const Order = mongoose.model('Order', new mongoose.Schema({
   orderNo: String, orderType: { type: String, default: 'delivery' }, payment: { type: String, default: 'cod' }, title: String, name: String, phone: String, altPhone: String, email: String,
@@ -38,14 +39,14 @@ const SEED_VERSION = 2; // bump when shared/menu.json gets new items: they are a
 
 let useMongo = false;
 let nextId = 1;
-const models = { menu: Menu, bookings: Booking, orders: Order };
-const mem = { menu: [], bookings: [], orders: [] };
+const models = { menu: Menu, bookings: Booking, orders: Order, categories: Category };
+const mem = { menu: [], bookings: [], orders: [], categories: [] };
 mem.menu = SEED_MENU.map(d => ({ ...d, _id: String(nextId++) }));
 
 const db = {
   list: async k => useMongo
-    ? models[k].find().sort(k === 'menu' ? { _id: 1 } : { createdAt: -1 }).lean()
-    : (k === 'menu' ? [...mem.menu] : [...mem[k]].reverse()),
+    ? models[k].find().sort(k === 'menu' || k === 'categories' ? { _id: 1 } : { createdAt: -1 }).lean()
+    : (k === 'menu' || k === 'categories' ? [...mem[k]] : [...mem[k]].reverse()),
   add: async (k, d) => {
     if (useMongo) return (await models[k].create(d)).toObject();
     const o = { ...d, _id: String(nextId++), createdAt: new Date() };
@@ -154,13 +155,51 @@ app.patch('/api/admin/bookings/:id', auth, ah(async (q, s) => {
 }));
 app.delete('/api/admin/bookings/:id', auth, ah(async (q, s) => s.json(found(await db.del('bookings', q.params.id)))));
 
+const cleanItem = b => ({ name: clean(b?.name, 80), desc: clean(b?.desc, 120), price: Number(b?.price), cat: clean(b?.cat, 40), emoji: clean(b?.emoji, 8), badge: clean(b?.badge, 30), img: clean(b?.img, 500), details: clean(b?.details, 600), deal: clean(b?.deal, 200) });
+const checkItem = item => { if (!item.name || !item.cat || !Number.isFinite(item.price) || item.price < 0) throw new HttpError(400, 'Name, category and a valid price are required'); };
+
+// Categories: every category used by a menu item always has a record; the admin can also create empty ones.
+const syncCats = async () => {
+  const [menu, cats] = await Promise.all([db.list('menu'), db.list('categories')]);
+  const have = new Set(cats.map(c => c.name));
+  for (const name of [...new Set(menu.map(m => m.cat))]) if (!have.has(name)) { await db.add('categories', { name, emoji: menu.find(m => m.cat === name)?.emoji || '' }); }
+  const all = await db.list('categories');
+  return all.map(c => ({ ...c, count: menu.filter(m => m.cat === c.name).length }));
+};
+
 app.post('/api/admin/menu', auth, ah(async (q, s) => {
-  const b = q.body ?? {};
-  const item = { name: clean(b.name, 80), desc: clean(b.desc, 120), price: Number(b.price), cat: clean(b.cat, 40), emoji: clean(b.emoji, 8), badge: clean(b.badge, 30), img: clean(b.img, 500), details: clean(b.details, 600), deal: clean(b.deal, 200) };
-  if (!item.name || !item.cat || !Number.isFinite(item.price) || item.price < 0) throw new HttpError(400, 'Name, category and a valid price are required');
+  const item = cleanItem(q.body);
+  checkItem(item);
   s.status(201).json(await db.add('menu', item));
 }));
+app.patch('/api/admin/menu/:id', auth, ah(async (q, s) => {
+  const item = cleanItem(q.body);
+  checkItem(item);
+  s.json(found(await db.set('menu', q.params.id, item)));
+}));
 app.delete('/api/admin/menu/:id', auth, ah(async (q, s) => s.json(found(await db.del('menu', q.params.id)))));
+
+app.get('/api/admin/categories', auth, ah(async (_q, s) => s.json(await syncCats())));
+app.post('/api/admin/categories', auth, ah(async (q, s) => {
+  const name = clean(q.body?.name, 40);
+  if (!name) throw new HttpError(400, 'Category name is required');
+  if ((await syncCats()).some(c => c.name.toLowerCase() === name.toLowerCase())) throw new HttpError(400, 'This category already exists');
+  s.status(201).json(await db.add('categories', { name, emoji: clean(q.body?.emoji, 8) }));
+}));
+app.patch('/api/admin/categories/:id', auth, ah(async (q, s) => {
+  const name = clean(q.body?.name, 40);
+  if (!name) throw new HttpError(400, 'Category name is required');
+  const cats = await syncCats();
+  const cur = found(cats.find(c => String(c._id) === q.params.id));
+  if (cats.some(c => c !== cur && c.name.toLowerCase() === name.toLowerCase())) throw new HttpError(400, 'This category already exists');
+  if (name !== cur.name) for (const m of (await db.list('menu')).filter(x => x.cat === cur.name)) await db.set('menu', String(m._id), { cat: name });
+  s.json(found(await db.set('categories', q.params.id, { name, emoji: clean(q.body?.emoji, 8) })));
+}));
+app.delete('/api/admin/categories/:id', auth, ah(async (q, s) => {
+  const cur = found((await syncCats()).find(c => String(c._id) === q.params.id));
+  if (cur.count) throw new HttpError(400, `This category still has ${cur.count} item(s). Move or delete them first.`);
+  s.json(found(await db.del('categories', q.params.id)));
+}));
 
 // ---------- Serve the built client (after `npm run build`) ----------
 const dist = fileURLToPath(new URL('../client/dist', import.meta.url));

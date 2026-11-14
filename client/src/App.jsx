@@ -8,6 +8,7 @@ import Admin from './pages/Admin.jsx';
 import CartDrawer from './components/CartDrawer.jsx';
 import SearchModal from './components/SearchModal.jsx';
 import ProductModal from './components/ProductModal.jsx';
+import Welcome from './components/Welcome.jsx';
 import BottomNav from './components/BottomNav.jsx';
 import { ScrollTop, WhatsAppFab } from './components/Floaters.jsx';
 
@@ -36,6 +37,7 @@ export default function App() {
       <BottomNav />
       <WhatsAppFab />
       <ScrollTop />
+      <Welcome />
     </StoreProvider>
   );
 }

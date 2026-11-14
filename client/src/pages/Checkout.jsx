@@ -16,9 +16,11 @@ const EMPTY = { title: 'Mr.', name: '', phone: '', altPhone: '', address: '', ar
 function loadSaved() {
   try {
     const s = JSON.parse(localStorage.getItem(SAVED_KEY) || 'null');
-    if (!s || typeof s !== 'object') return EMPTY;
+    const prof = JSON.parse(localStorage.getItem('mf-profile') || 'null'); // from the welcome screen
     const out = { ...EMPTY };
-    for (const k of REMEMBER) if (typeof s[k] === 'string') out[k] = s[k];
+    if (prof && typeof prof === 'object') { if (typeof prof.name === 'string') out.name = prof.name; if (typeof prof.address === 'string') out.address = prof.address; }
+    if (!s || typeof s !== 'object') return out;
+    for (const k of REMEMBER) if (typeof s[k] === 'string' && s[k]) out[k] = s[k];
     if (!AREAS.includes(out.area)) out.area = AREAS[0];
     return out;
   } catch { return EMPTY; }

@@ -96,6 +96,25 @@ export function demoCall(url, { method = 'GET', body, token } = {}) {
     return bk;
   }
 
+  if (path === '/api/visitors' && method === 'POST') {
+    const name = clean(b.name, 80);
+    if (!name) fail(400, 'Please enter your name');
+    const lat = Number(b.lat); const lng = Number(b.lng);
+    const hasGeo = b.lat != null && b.lng != null && Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180;
+    const v = { _id: 'v' + Date.now(), name, address: clean(b.address, 200), ...(hasGeo && { lat, lng, accuracy: Math.round(Number(b.accuracy)) || undefined }), createdAt: new Date().toISOString() };
+    (d.visitors ||= []).push(v); save();
+    return { id: v._id };
+  }
+  const vm = path.match(/^\/api\/admin\/visitors(?:\/([^/]+))?$/);
+  if (vm) {
+    needAdmin(token);
+    const list = d.visitors ||= [];
+    if (method === 'GET') return [...list].reverse();
+    const i = list.findIndex(x => x._id === vm[1]);
+    if (i < 0) fail(404, 'Not found');
+    if (method === 'DELETE') { const [gone] = list.splice(i, 1); save(); return gone; }
+  }
+
   // ---- admin ----
   const cm = path.match(/^\/api\/admin\/categories(?:\/([^/]+))?$/);
   if (cm) {

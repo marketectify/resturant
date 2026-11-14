@@ -34,6 +34,12 @@ export default function BottomNav() {
     return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
   }, [favOpen]);
 
+  useEffect(() => {
+    const open = () => { setIds(favIds()); setFavOpen(true); };
+    window.addEventListener('open-favs', open);
+    return () => window.removeEventListener('open-favs', open);
+  }, []);
+
   if (route === '/checkout') return null;
   const openFav = () => { setIds(favIds()); setFavOpen(true); };
   const home = () => { if (route === '/') window.scrollTo({ top: 0, behavior: 'smooth' }); else location.hash = '#/'; };

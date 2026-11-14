@@ -3,6 +3,7 @@ import Header from '../components/Header.jsx';
 import Icon from '../components/Icon.jsx';
 import Thumb from '../components/Thumb.jsx';
 import ItemCard from '../components/ItemCard.jsx';
+import { DashSide, DashRight, DashHead } from '../components/DashChrome.jsx';
 import Footer from '../components/Footer.jsx';
 import { MenuFloaters } from '../components/Floaters.jsx';
 import { useStore } from '../store.jsx';
@@ -87,6 +88,12 @@ export default function MenuPage() {
     return () => { window.removeEventListener('scroll', onScroll); clearTimeout(t); };
   }, []);
 
+  // Laptop dashboard layout: the CSS only applies while this class is on <html>.
+  useEffect(() => {
+    document.documentElement.classList.add('is-dash');
+    return () => document.documentElement.classList.remove('is-dash');
+  }, []);
+
   // Clicking the logo in the top bar opens the all-categories sheet.
   useEffect(() => {
     const open = () => setCatsOpen(true);
@@ -107,6 +114,10 @@ export default function MenuPage() {
       <button className="m-search" ref={msearch} onClick={() => setSearchOpen(true)} aria-label="Search the menu">
         <Icon name="search" size={20} /> <span>Search biryani, burger, karahi…</span>
       </button>
+
+      {menu !== null && <DashSide onMenu={() => go(cats[0])} />}
+      {menu !== null && <DashRight menu={menu} />}
+      {menu !== null && <DashHead sections={sections} current={current} onGo={go} onAll={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />}
 
       {menu !== null && (
         <section className="top-cats" aria-label="Top categories">

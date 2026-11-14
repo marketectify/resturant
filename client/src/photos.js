@@ -17,10 +17,10 @@ const P = {
   fries: u('1688978181542-87a886a16fbe'), // Durenne Loris
   salad: u('1773902280003-a769eb447460'), // You Le
   lassi: u('1636044992466-ba190da5d40b'), // nrd
-  lime: u('1527661591475-527312dd65f5'), // ShengGeng Lin
+  lime: u('1527661591475-527312dd65f5'), // ShengGeng Lin, Vicky Ng, Joshua Ryder
 };
 
-const RULES = [
+const RULES = [[/egg fried/i,P.eggRice],[/chicken fried/i,P.riceEgg2],
   [/burger/i, P.burger],
   [/biryani/i, P.biryani],
   [/haleem|nihari|paye/i, P.meatStew],
@@ -35,7 +35,7 @@ const RULES = [
   [/lassi/i, P.lassi],
   [/lime|margarita/i, P.lime],
 ];
-const BY_CAT = { 'Premium Burger': P.burger, 'Bar B.Q. Platter': P.bbq, 'Bar B.Q': P.tikka };
+const BY_CAT = { 'Fried Rice': P.eggRice, 'Premium Burger': P.burger, 'Bar B.Q. Platter': P.bbq, 'Bar B.Q': P.tikka };
 
 /** Photo URL for a menu item, or '' when we have none (the emoji tile is shown instead). */
 export const stockPhoto = item => RULES.find(([re]) => re.test(item.name))?.[1] || BY_CAT[item.cat] || '';

@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { api } from '../api.js';
+import { authToken } from '../auth.js';
 
 const KEY = 'mf-fav';
 const read = () => { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; } };
@@ -7,11 +9,17 @@ const write = v => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch
 /** Small heart toggle; favourites are remembered in this browser only. */
 export default function Heart({ id, className = '' }) {
   const [on, setOn] = useState(() => read().includes(id));
+  useEffect(() => {
+    const sync = () => setOn(read().includes(id));
+    window.addEventListener('favs-change', sync);
+    return () => window.removeEventListener('favs-change', sync);
+  }, [id]);
   const toggle = e => {
     e.stopPropagation();
     const now = read();
     const next = now.includes(id) ? now.filter(x => x !== id) : [...now, id];
     write(next); setOn(next.includes(id));
+    if (authToken()) api('/api/me', { method: 'PATCH', body: { favs: next } }).catch(() => {}); // keep the account's favourites in step
   };
   return (
     <button className={`heart${on ? ' on' : ''} ${className}`} onClick={toggle} aria-pressed={on} aria-label={on ? 'Remove from favourites' : 'Add to favourites'}>

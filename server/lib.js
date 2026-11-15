@@ -79,3 +79,40 @@ export function verifyToken(secret, token, now = Date.now()) {
   const want = crypto.createHmac('sha256', secret).update(exp).digest('hex');
   return sig.length === want.length && crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(want));
 }
+
+// ---------- Customer accounts ----------
+export function hashPassword(pw) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  return `${salt}:${crypto.scryptSync(String(pw), salt, 32).toString('hex')}`;
+}
+
+export function checkPassword(pw, stored) {
+  const [salt, hash = ''] = String(stored || '').split(':');
+  if (!salt || !hash) return false;
+  const got = crypto.scryptSync(String(pw), salt, 32);
+  const want = Buffer.from(hash, 'hex');
+  return got.length === want.length && crypto.timingSafeEqual(got, want);
+}
+
+/** Customer login tokens: "u.<userId>.<expiry>.<signature>". Different shape from the admin token, so one can never pass as the other. */
+export function makeUserToken(secret, userId, ttlMs, now = Date.now()) {
+  const body = `u.${userId}.${now + ttlMs}`;
+  return `${body}.${crypto.createHmac('sha256', secret).update(body).digest('hex')}`;
+}
+
+export function verifyUserToken(secret, token, now = Date.now()) {
+  if (typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length !== 4 || parts[0] !== 'u' || !/^\d+$/.test(parts[2]) || Number(parts[2]) <= now) return null;
+  const want = crypto.createHmac('sha256', secret).update(parts.slice(0, 3).join('.')).digest('hex');
+  const ok = parts[3].length === want.length && crypto.timingSafeEqual(Buffer.from(parts[3]), Buffer.from(want));
+  return ok ? parts[1] : null;
+}
+
+/** A login identifier is either a Pakistani mobile number or an e-mail address. */
+export function parseIdentifier(v) {
+  const t = String(v ?? '').trim();
+  if (t.includes('@')) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t) && t.length <= 120 ? { email: t.toLowerCase() } : null;
+  const ph = normalizePhone(t);
+  return ph ? { phone: ph } : null;
+}

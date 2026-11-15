@@ -47,6 +47,7 @@ export default function Footer() {
               <li><a href="#/" onClick={e => { if (!location.hash || location.hash === '#/') { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }}>Menu</a></li>
               <li><a href="#/track">Track your order</a></li>
               <li><a href="#/book">Book a table</a></li>
+              <li><a href="#/account">My account</a></li>
               <li><a href="#/" onClick={go('open-favs')}>Favourites</a></li>
             </ul>
           </div>

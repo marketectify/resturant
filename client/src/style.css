@@ -1094,3 +1094,34 @@ body { background: var(--bg); padding-bottom: 96px; }
 @keyframes catScroll { to { transform: translateX(calc(-50% - 6px)); } }
 @media (max-width: 700px) { .top-track .top-cat { width: 140px; } .top-track { gap: 10px; } @keyframes catScroll { to { transform: translateX(calc(-50% - 5px)); } } }
 @media (prefers-reduced-motion: reduce) { .top-track { animation: none; } .top-marquee { overflow-x: auto; } }
+
+/* ===== Customer accounts ===== */
+.acct-btn { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 50%; background: #fff; color: var(--ink); box-shadow: 0 2px 10px #0000001a; }
+.acct-btn.in { background: var(--dark); color: #fff; font-weight: 700; }
+.acct-btn.in b { font-size: 16px; }
+.wl.au { max-height: calc(100dvh - 24px); overflow-y: auto; }
+.au-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 4px 0 6px; padding: 4px; background: var(--soft); border-radius: 99px; }
+.au-tabs button { height: 38px; border-radius: 99px; font-weight: 700; font-size: 14px; color: var(--mut); }
+.au-tabs button.on { background: #fff; color: var(--ink); box-shadow: 0 2px 8px #0000001a; }
+.wl-login { display: block; width: 100%; margin-top: 8px; color: var(--mut); font-size: 13.5px; text-align: center; }
+.wl-login b { color: var(--ink); text-decoration: underline; }
+.acc-guest { text-align: center; }
+.acc-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+.acc-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.acc-head h2 { margin: 0; font-size: 20px; }
+.acc-av { display: grid; place-items: center; flex: none; width: 52px; height: 52px; border-radius: 50%; background: var(--dark); color: #fff; font-size: 22px; font-weight: 700; }
+.acc-out { margin-left: auto; padding: 8px 16px; border-radius: 99px; background: var(--soft); font-weight: 600; font-size: 13px; }
+.acc-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.acc-form label { display: grid; gap: 6px; font-size: 13px; font-weight: 600; }
+.acc-form .wide, .acc-form .wl-go, .acc-form p { grid-column: 1 / -1; }
+.acc-ok { color: var(--green); font-weight: 600; font-size: 14px; }
+.acc-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 12px; }
+.acc-list li { padding: 14px; border-radius: 18px; background: var(--soft); display: grid; gap: 4px; }
+.acc-list p { margin: 0; font-size: 13.5px; color: var(--mut); }
+.acc-list small { color: var(--mut); }
+.acc-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.acc-row a { font-weight: 700; font-size: 13.5px; text-decoration: underline; }
+.acc-st { padding: 3px 10px; border-radius: 99px; background: #fff; font-size: 12px; font-weight: 700; }
+.acc-st.delivered, .acc-st.confirmed { background: #d9f5e3; color: #137a3a; }
+.acc-st.cancelled { background: #fde2e2; color: #b42318; }
+@media (max-width: 600px) { .acc-form { grid-template-columns: 1fr; } .acct-btn { width: 36px; height: 36px; } }

@@ -51,6 +51,7 @@ export default function Admin() {
   const [menu, setMenu] = useState([]);
   const [cats, setCats] = useState([]);
   const [visitors, setVisitors] = useState([]);
+  const [users, setUsers] = useState([]);
   const [form, setForm] = useState(null); // item being added (no _id) or edited
   const [catForm, setCatForm] = useState(null);
   const [filter, setFilter] = useState('');
@@ -62,6 +63,7 @@ export default function Admin() {
     try {
       const [o, b, m, c, v] = await Promise.all([api('/api/admin/orders', { token }), api('/api/admin/bookings', { token }), api('/api/menu'), api('/api/admin/categories', { token }), api('/api/admin/visitors', { token })]);
       setOrders(o); setBookings(b); setMenu(m); setCats(c); setVisitors(v);
+      api('/api/admin/users', { token }).then(setUsers).catch(() => {});
     } catch (e) { if (e.status === 401) logout(); else setMsg(e.offline ? 'Server is not connected.' : e.message); }
   }, [token, logout]);
   useEffect(() => { if (token) load(); }, [token, load]);
@@ -89,7 +91,7 @@ export default function Admin() {
   };
 
   const shown = menu.filter(m => (!filter || m.cat === filter) && (!q || `${m.name} ${m.cat}`.toLowerCase().includes(q.toLowerCase())));
-  const tabs = [['orders', `Orders (${orders.length})`], ['bookings', `Bookings (${bookings.length})`], ['menu', `Menu (${menu.length})`], ['cats', `Categories (${cats.length})`], ['visitors', `Customers (${visitors.length})`]];
+  const tabs = [['orders', `Orders (${orders.length})`], ['bookings', `Bookings (${bookings.length})`], ['menu', `Menu (${menu.length})`], ['cats', `Categories (${cats.length})`], ['visitors', `Customers (${visitors.length})`], ['users', `Accounts (${users.length})`]];
 
   return (
     <div className="adm">
@@ -225,6 +227,28 @@ export default function Admin() {
                   </tr>
                 );
               })}
+            </tbody>
+          </table></div>
+        </>
+      )}
+
+      {tab === 'users' && (
+        <>
+          <p className="muted-l" style={{ marginBottom: 12 }}>Customers who created an account (login with mobile number or e-mail). Their orders and bookings are saved under the account.</p>
+          <div className="tw"><table>
+            <thead><tr><th>Name</th><th>Mobile</th><th>E-mail</th><th>Orders</th><th>Joined</th><th className="act">Action</th></tr></thead>
+            <tbody>
+              {users.length === 0 && <tr><td colSpan="6" className="muted">No accounts yet.</td></tr>}
+              {users.map(u => (
+                <tr key={u.id}>
+                  <td><b>{u.name}</b>{u.address && <small>{u.address}</small>}</td>
+                  <td>{u.phone || '-'}</td>
+                  <td>{u.email || '-'}</td>
+                  <td>{u.orders}</td>
+                  <td>{when(u.createdAt)}</td>
+                  <td className="act"><button className="icon-btn danger" onClick={() => del('users', u.id, u.name)} aria-label={`Delete ${u.name}`} title="Delete">{TrashIc}</button></td>
+                </tr>
+              ))}
             </tbody>
           </table></div>
         </>

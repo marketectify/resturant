@@ -1187,3 +1187,5 @@ body { background: var(--bg); padding-bottom: 96px; }
 .bnav-cart { width: 62px !important; height: 62px !important; margin-top: 0 !important; transform: translateY(-30px); box-shadow: 0 8px 18px #00000055 !important; }
 .bnav-cart:active { transform: translateY(-30px) scale(.94); }
 .bnav::after { content: ''; position: absolute; z-index: -1; left: 50%; top: 4px; width: 86px; height: 86px; transform: translate(-50%, -50%); border-radius: 50%; background: var(--bg); }
+.chip-img .thumb { transition: transform .45s cubic-bezier(.2, .8, .3, 1); }
+.chip:hover .chip-img .thumb, .chip:focus-visible .chip-img .thumb { transform: scale(1.25); }

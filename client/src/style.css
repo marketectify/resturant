@@ -1294,3 +1294,6 @@ img { -webkit-user-drag: none; user-select: none; -webkit-user-select: none; }
 input, textarea, select { user-select: text; -webkit-user-select: text; }
 button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none; }
 .bnav > button span.bnav-ic { overflow: visible; max-width: none; }
+
+/* count badge on the laptop sidebar's Favourites item */
+.ds-badge { margin-left: auto; min-width: 22px; height: 22px; padding: 0 7px; display: grid; place-items: center; border-radius: 99px; background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; line-height: 1; animation: pop .3s; }

@@ -2,13 +2,13 @@ import { useEffect, useRef } from 'react';
 import Thumb from './Thumb.jsx';
 import Icon from './Icon.jsx';
 
-const SPEED = 22; // px per second: slow, gentle auto-scroll
+const SPEED = 24; // px per second: slow, gentle auto-scroll
 
 /**
- * Top categories strip. It scrolls by itself, slowly and endlessly; the customer can also swipe or drag it
+ * Category chips strip (same on phone and laptop). It scrolls by itself, slowly and endlessly; the customer can also swipe or drag it
  * (phones) or use the arrows (laptops). Auto-scroll pauses while they interact, then carries on.
  */
-export default function TopCats({ sections, go }) {
+export default function CatChips({ sections, go, current, onAll }) {
   const box = useRef(null);
   const n = sections.length;
   const holdRef = useRef(() => {});
@@ -52,23 +52,21 @@ export default function TopCats({ sections, go }) {
     const el = box.current;
     if (!el) return;
     holdRef.current(1600); // let the smooth scroll finish before auto-scroll carries on
-    const card = el.querySelector('.top-cat');
-    const w = (card?.offsetWidth || 160) + 12;
+    const card = el.querySelector('.chip');
+    const w = (card?.offsetWidth || 86) + 12;
     const h = el.firstElementChild.children[n]?.offsetLeft - el.firstElementChild.children[0].offsetLeft || 0;
     if (dir < 0 && el.scrollLeft < w * 2 && h) el.scrollLeft += h; // keep room to go back
     el.scrollBy({ left: dir * w * 2, behavior: 'smooth' });
   };
 
   return (
-    <div className="top-wrap">
+    <div className="chips-wrap">
       <button type="button" className="top-arrow l" onClick={() => step(-1)} aria-label="Previous categories"><Icon name="arrow-left" size={18} stroke={2.6} /></button>
-      <div className="top-marquee" ref={box}>
-        <div className="top-track">
+      <div className="top-marquee chips-marquee" ref={box}>
+        <div className="top-track chips-track" role="list">
           {[0, 1].map(k => sections.map(s => (
-            <button key={k + s.cat} className="top-cat" tabIndex={k ? -1 : 0} aria-hidden={k ? 'true' : undefined} onClick={() => go(s.cat)}>
-              <span className="top-cat-img"><Thumb item={s.items[0]} /></span>
-              <b>{s.cat}</b>
-              <small>{s.items.length} items</small>
+            <button key={k + s.cat} role="listitem" className={`chip${s.cat === current ? ' on' : ''}`} tabIndex={k ? -1 : 0} aria-hidden={k ? 'true' : undefined} onClick={() => go(s.cat)}>
+              <span className="chip-img"><Thumb item={s.items[0]} /></span><b>{s.cat}</b>
             </button>
           )))}
         </div>

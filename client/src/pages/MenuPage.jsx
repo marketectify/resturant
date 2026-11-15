@@ -3,7 +3,7 @@ import Header from '../components/Header.jsx';
 import Icon from '../components/Icon.jsx';
 import Thumb from '../components/Thumb.jsx';
 import ItemCard from '../components/ItemCard.jsx';
-import TopCats from '../components/TopCats.jsx';
+import CatChips from '../components/CatChips.jsx';
 import { DashSide, DashRight, DashHead } from '../components/DashChrome.jsx';
 import Footer from '../components/Footer.jsx';
 import { MenuFloaters } from '../components/Floaters.jsx';
@@ -121,9 +121,8 @@ export default function MenuPage() {
       {menu !== null && <DashHead sections={sections} current={current} onGo={go} onAll={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />}
 
       {menu !== null && (
-        <section className="top-cats" aria-label="Top categories">
-          <h2>Top categories</h2>
-          <TopCats sections={sections} go={go} />
+        <section className="cat-chips" aria-label="Categories">
+          <CatChips sections={sections} go={go} current={current} onAll={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
         </section>
       )}
 

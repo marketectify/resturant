@@ -114,14 +114,6 @@ export function DashHead({ sections, current, onGo, onAll }) {
           </button>
         </div>
       </div>
-      <div className="dh-chips" role="list">
-        <button role="listitem" className={!current ? 'on' : ''} onClick={onAll}><span className="dh-chip-img all">{I.menu}</span><b>All</b></button>
-        {sections.map(s => (
-          <button role="listitem" key={s.cat} className={s.cat === current ? 'on' : ''} onClick={() => onGo(s.cat)}>
-            <span className="dh-chip-img"><Thumb item={s.items[0]} /></span><b>{s.cat}</b>
-          </button>
-        ))}
-      </div>
     </div>
   );
 }

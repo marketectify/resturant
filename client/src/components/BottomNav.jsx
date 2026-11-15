@@ -1,3 +1,4 @@
+import { useBackClose } from '../backClose.js';
 import { useEffect, useState } from 'react';
 import Icon from './Icon.jsx';
 import Thumb from './Thumb.jsx';
@@ -20,6 +21,7 @@ export default function BottomNav() {
   const { count, setDrawerOpen, setSearchOpen, menu, setDetail, add } = useStore();
   const [route, setRoute] = useState(hash);
   const [favOpen, setFavOpen] = useState(false);
+  useBackClose(favOpen, () => setFavOpen(false));
   const [ids, setIds] = useState([]);
   const [favCount, setFavCount] = useState(() => favIds().length);
   useEffect(() => {

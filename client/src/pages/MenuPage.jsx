@@ -1,3 +1,4 @@
+import { useBackClose } from '../backClose.js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Header from '../components/Header.jsx';
 import Icon from '../components/Icon.jsx';
@@ -22,6 +23,7 @@ export default function MenuPage() {
 
   const [active, setActive] = useState(null);
   const [catsOpen, setCatsOpen] = useState(false);
+  useBackClose(catsOpen, () => setCatsOpen(false));
   const msearch = useRef(null);
   const { setSearchOpen } = useStore();
   const lock = useRef(0); // while a click-scroll is running the scroll listener must not change the tab

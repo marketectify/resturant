@@ -1,3 +1,4 @@
+import { useBackClose } from '../backClose.js';
 import { useEffect, useRef } from 'react';
 import Icon from './Icon.jsx';
 import Thumb from './Thumb.jsx';
@@ -19,6 +20,7 @@ export default function CartDrawer() {
   const { drawerOpen, setDrawerOpen, lines, count, inc, dec, remove, subtotal, fee, orderType, total, clear } = useStore();
   const closeRef = useRef(null);
   const close = () => setDrawerOpen(false);
+  useBackClose(drawerOpen, close);
 
   useEffect(() => {
     if (!drawerOpen) return undefined;

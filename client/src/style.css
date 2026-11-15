@@ -1195,7 +1195,6 @@ body { background: var(--bg); padding-bottom: 96px; }
 
 /* ===== Bottom bar v3: slimmer bar, small round notch, button floats inside it ===== */
 .bnav { height: 58px; bottom: 10px; grid-template-columns: 1fr 1fr 78px 1fr 1fr; background: none !important; box-shadow: none !important; filter: drop-shadow(0 6px 14px #00000026); }
-.bnav::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: 30px; background: #fff; -webkit-mask: radial-gradient(circle 32px at 50% 3px, #0000 97%, #000 100%); mask: radial-gradient(circle 32px at 50% 3px, #0000 97%, #000 100%); }
 .bnav > button, .bnav > a { gap: 2px; font-size: 10.5px; }
 .bnav > button svg, .bnav > a svg { width: 22px; height: 22px; }
 .bnav-cart { width: 52px !important; height: 52px !important; margin-top: 0 !important; transform: translateY(-26px); box-shadow: 0 6px 14px #0000004d !important; }
@@ -1203,7 +1202,6 @@ body { background: var(--bg); padding-bottom: 96px; }
 
 .bnav-cart b { top: -4px; right: -4px; min-width: 20px; height: 20px; font-size: 11px; }
 .bnav-cart:active { transform: translateY(-26px) scale(.94); }
-.bnav::after { content: ''; position: absolute; z-index: -1; left: 50%; top: 3px; width: 64px; height: 64px; transform: translate(-50%, -50%); border-radius: 50%; background: var(--bg); }
 
 /* ===== Slim text category bar (shows when the chips scroll away) ===== */
 .sticky-cats { position: fixed; z-index: 44; top: var(--sc-top, 0); left: 0; right: 0; height: 46px; background: #fff; box-shadow: 0 4px 14px #0000001a; transform: translateY(-110%); opacity: 0; pointer-events: none; transition: transform .3s cubic-bezier(.2, .8, .3, 1), opacity .25s; }
@@ -1243,3 +1241,10 @@ body { background: var(--bg); padding-bottom: 96px; }
 .bnav > button span, .bnav > a span { max-width: 100%; overflow: hidden; text-overflow: clip; white-space: nowrap; }
 .bnav-cart { justify-self: center; }
 @media (max-width: 360px) { .bnav > button, .bnav > a { font-size: 9.5px; } }
+
+/* bottom bar background: left slab + smooth notch piece (rounded fillets, no sharp corners) + right slab */
+.bnav-bg { position: absolute; inset: 0; z-index: -1; display: flex; pointer-events: none; }
+.bnav-bg i { flex: 1; background: #fff; margin: 0 -.4px; }
+.bnav-bg i.l { border-radius: 30px 0 0 30px; margin-left: 0; }
+.bnav-bg i.r { border-radius: 0 30px 30px 0; margin-right: 0; }
+.bnav-bg svg { flex: none; display: block; fill: #fff; }

@@ -3,6 +3,7 @@ import Header from '../components/Header.jsx';
 import Icon from '../components/Icon.jsx';
 import Thumb from '../components/Thumb.jsx';
 import ItemCard from '../components/ItemCard.jsx';
+import TopCats from '../components/TopCats.jsx';
 import { DashSide, DashRight, DashHead } from '../components/DashChrome.jsx';
 import Footer from '../components/Footer.jsx';
 import { MenuFloaters } from '../components/Floaters.jsx';
@@ -122,17 +123,7 @@ export default function MenuPage() {
       {menu !== null && (
         <section className="top-cats" aria-label="Top categories">
           <h2>Top categories</h2>
-          <div className="top-marquee">
-            <div className="top-track" style={{ animationDuration: `${Math.max(sections.length, 4) * 8}s` }}>
-              {[0, 1].map(k => sections.map(s => (
-                <button key={k + s.cat} className="top-cat" tabIndex={k ? -1 : 0} aria-hidden={k ? 'true' : undefined} onClick={() => go(s.cat)}>
-                  <span className="top-cat-img"><Thumb item={s.items[0]} /></span>
-                  <b>{s.cat}</b>
-                  <small>{s.items.length} items</small>
-                </button>
-              )))}
-            </div>
-          </div>
+          <TopCats sections={sections} go={go} />
         </section>
       )}
 

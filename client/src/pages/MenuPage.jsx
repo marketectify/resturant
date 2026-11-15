@@ -4,6 +4,7 @@ import Icon from '../components/Icon.jsx';
 import Thumb from '../components/Thumb.jsx';
 import ItemCard from '../components/ItemCard.jsx';
 import CatChips from '../components/CatChips.jsx';
+import StickyCats from '../components/StickyCats.jsx';
 import { DashSide, DashRight, DashHead } from '../components/DashChrome.jsx';
 import Footer from '../components/Footer.jsx';
 import { MenuFloaters } from '../components/Floaters.jsx';
@@ -119,6 +120,8 @@ export default function MenuPage() {
       {menu !== null && <DashSide onMenu={() => go(cats[0])} />}
       {menu !== null && <DashRight menu={menu} />}
       {menu !== null && <DashHead sections={sections} current={current} onGo={go} onAll={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />}
+
+      {menu !== null && <StickyCats cats={cats} current={current} go={go} />}
 
       {menu !== null && (
         <section className="cat-chips" aria-label="Categories">

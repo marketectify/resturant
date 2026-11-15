@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { DashSide, useDashLite } from '../components/DashChrome.jsx';
 import Header from '../components/Header.jsx';
 import Icon from '../components/Icon.jsx';
 import { api } from '../api.js';
@@ -20,6 +21,7 @@ export function stepIndex(orderType, status) {
 const query = () => new URLSearchParams(location.hash.split('?')[1] || '');
 
 export default function Track() {
+  useDashLite();
   const [orderNo, setOrderNo] = useState(() => query().get('no') || '');
   const [phone, setPhone] = useState(() => query().get('phone') || '');
   const [order, setOrder] = useState(null);
@@ -49,6 +51,7 @@ export default function Track() {
 
   return (
     <>
+      <DashSide active="track" />
       <Header />
       <div className="page single">
         <section className="panel">

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Icon from './Icon.jsx';
 import Thumb from './Thumb.jsx';
 import { useStore } from '../store.jsx';
@@ -23,7 +23,17 @@ export function useDashLite() {
   }, []);
 }
 
+const favCountNow = () => { try { return JSON.parse(localStorage.getItem('mf-fav') || '[]').length; } catch { return 0; } };
+
 export function DashSide({ onMenu, active = 'home' }) {
+  const [favCount, setFavCount] = useState(favCountNow);
+  useEffect(() => {
+    const on = () => setFavCount(favCountNow());
+    window.addEventListener('favs-change', on);
+    window.addEventListener('storage', on);
+    return () => { window.removeEventListener('favs-change', on); window.removeEventListener('storage', on); };
+  }, []);
+  const favBadge = favCount > 0 && <b key={favCount} className="ds-badge">{favCount}</b>;
   const link = (cls, icon, label, props) => <a className={cls} {...props}>{icon}<span>{label}</span></a>;
   return (
     <aside className="dash-side dash-only" aria-label="Navigation">
@@ -36,8 +46,8 @@ export function DashSide({ onMenu, active = 'home' }) {
           : link('', I.home, 'Home', { href: '#/' })}
         {onMenu ? <button onClick={onMenu}>{I.menu}<span>Menu</span></button> : link('', I.menu, 'Menu', { href: '#/' })}
         {active === 'home'
-          ? <button onClick={() => window.dispatchEvent(new Event('open-favs'))}>{I.heart}<span>Favourites</span></button>
-          : link('', I.heart, 'Favourites', { href: '#/' })}
+          ? <button onClick={() => window.dispatchEvent(new Event('open-favs'))}>{I.heart}<span>Favourites</span>{favBadge}</button>
+          : <a href="#/" onClick={() => setTimeout(() => window.dispatchEvent(new Event('open-favs')), 60)}>{I.heart}<span>Favourites</span>{favBadge}</a>}
         {link(active === 'track' ? 'on' : '', I.orders, 'Track order', { href: '#/track' })}
         {link(active === 'book' ? 'on' : '', I.table, 'Book a table', { href: '#/book' })}
         {link(active === 'account' ? 'on' : '', I.user, 'My account', { href: '#/account' })}

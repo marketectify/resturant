@@ -1,3 +1,4 @@
+import { useBackClose } from '../backClose.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Icon from './Icon.jsx';
 import Thumb from './Thumb.jsx';
@@ -6,6 +7,7 @@ import { rs } from '../config.js';
 
 export default function SearchModal() {
   const { menu, searchOpen, setSearchOpen, add } = useStore();
+  useBackClose(searchOpen, () => setSearchOpen(false));
   const [q, setQ] = useState('');
   const input = useRef(null);
 

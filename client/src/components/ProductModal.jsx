@@ -4,6 +4,7 @@ import Thumb from './Thumb.jsx';
 import AutoStrip from './AutoStrip.jsx';
 import Heart from './Heart.jsx';
 import { useStore } from '../store.jsx';
+import { useBackClose } from '../backClose.js';
 import { rs, BIZ } from '../config.js';
 
 // Big detail card for one menu item: photo, price, description, deal, "goes well with" and add-to-cart.
@@ -15,6 +16,8 @@ export default function ProductModal() {
   const zoomRef = useRef(false);
   useEffect(() => { zoomRef.current = zoom; }, [zoom]);
   const close = () => setDetail(null);
+  useBackClose(!!item, () => setDetail(null));
+  useBackClose(zoom, () => setZoom(false));
 
   useEffect(() => {
     if (!item) return undefined;

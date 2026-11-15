@@ -1182,11 +1182,6 @@ body { background: var(--bg); padding-bottom: 96px; }
 .top-arrow { top: 34%; }
 
 /* ===== Bottom bar with a real round notch: the cart button floats inside it and never touches the bar ===== */
-.bnav { background: none !important; box-shadow: none !important; filter: drop-shadow(0 8px 16px #0000002b); }
-.bnav::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: 36px; background: #fff; -webkit-mask: radial-gradient(circle 43px at 50% 4px, #0000 97%, #000 100%); mask: radial-gradient(circle 43px at 50% 4px, #0000 97%, #000 100%); }
-.bnav-cart { width: 62px !important; height: 62px !important; margin-top: 0 !important; transform: translateY(-30px); box-shadow: 0 8px 18px #00000055 !important; }
-.bnav-cart:active { transform: translateY(-30px) scale(.94); }
-.bnav::after { content: ''; position: absolute; z-index: -1; left: 50%; top: 4px; width: 86px; height: 86px; transform: translate(-50%, -50%); border-radius: 50%; background: var(--bg); }
 .chip-img .thumb { transition: transform .45s cubic-bezier(.2, .8, .3, 1); }
 .chip:hover .chip-img .thumb, .chip:focus-visible .chip-img .thumb { transform: scale(1.25); }
 
@@ -1197,3 +1192,15 @@ body { background: var(--bg); padding-bottom: 96px; }
 .pm-strip .top-track { gap: 10px; }
 .pm-strip .pm-mini { height: 100%; }
 .as-solo .as-dup { display: none; }
+
+/* ===== Bottom bar v3: slimmer bar, small round notch, button floats inside it ===== */
+.bnav { height: 58px; bottom: 10px; grid-template-columns: 1fr 1fr 78px 1fr 1fr; background: none !important; box-shadow: none !important; filter: drop-shadow(0 6px 14px #00000026); }
+.bnav::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: 30px; background: #fff; -webkit-mask: radial-gradient(circle 32px at 50% 3px, #0000 97%, #000 100%); mask: radial-gradient(circle 32px at 50% 3px, #0000 97%, #000 100%); }
+.bnav > button, .bnav > a { gap: 2px; font-size: 10.5px; }
+.bnav > button svg, .bnav > a svg { width: 22px; height: 22px; }
+.bnav-cart { width: 52px !important; height: 52px !important; margin-top: 0 !important; transform: translateY(-26px); box-shadow: 0 6px 14px #0000004d !important; }
+.bnav-cart svg { width: 24px !important; height: 24px !important; }
+
+.bnav-cart b { top: -4px; right: -4px; min-width: 20px; height: 20px; font-size: 11px; }
+.bnav-cart:active { transform: translateY(-26px) scale(.94); }
+.bnav::after { content: ''; position: absolute; z-index: -1; left: 50%; top: 3px; width: 64px; height: 64px; transform: translate(-50%, -50%); border-radius: 50%; background: var(--bg); }

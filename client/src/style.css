@@ -1248,3 +1248,11 @@ body { background: var(--bg); padding-bottom: 96px; }
 .bnav-bg i.l { border-radius: 30px 0 0 30px; margin-left: 0; }
 .bnav-bg i.r { border-radius: 0 30px 30px 0; margin-right: 0; }
 .bnav-bg svg { flex: none; display: block; fill: #fff; }
+
+/* ===== Item popup: clean white (no grey band at the sheet's rounded corners), photo shown in full ===== */
+.pm, .pm-scroll, .pm-hero { background: #fff; }
+.pm-sheet { background: #fff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: none !important; padding-top: 14px; min-height: 0; }
+.pm-hero { padding: 62px 0 0; }
+.pm-plate { width: min(252px, 62vw); margin-bottom: 10px; transform: none !important; }
+.pm-ground { display: none; }
+.pm-hero { overflow: visible; padding-bottom: 8px; } .pm-sheet { z-index: 0; }

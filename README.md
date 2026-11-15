@@ -91,3 +91,7 @@ On a customer's first visit a welcome card asks for a name and (optionally) thei
 
 ## Per-dish photos
 `client/src/photos.js` has a `NAMED` map: one different Unsplash photo for every dish (picked from Unsplash search results by their captions, so a few may not be a perfect match: just change that entry). A real photo placed in `client/public/menu/<slug>.jpg` always wins.
+
+## Customer accounts
+
+Customers can sign up / log in with a **mobile number or e-mail + password** (`#/account`). Orders and table bookings made while logged in are saved under the account, and favourites follow the customer across devices. Passwords are hashed with scrypt on the server; login tokens are signed (HMAC) and last 90 days. The admin panel has an **Accounts** tab. In demo mode (no server) accounts live in the browser only.

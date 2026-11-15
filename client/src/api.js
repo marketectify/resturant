@@ -1,5 +1,6 @@
 // Set VITE_API_URL when the client is hosted separately from the API (e.g. static hosting).
 import { demoCall } from './demo.js';
+import { authToken } from './auth.js';
 
 const BASE = import.meta.env?.VITE_API_URL || '';
 
@@ -13,14 +14,14 @@ export async function api(url, { method = 'GET', body, token } = {}) {
   try {
     r = await fetch(BASE + url, {
       method,
-      headers: { 'Content-Type': 'application/json', ...(token && { 'x-token': token }) },
+      headers: { 'Content-Type': 'application/json', ...(token && { 'x-token': token }), ...(authToken() && { 'x-user': authToken() }) },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch {
-    return demoCall(url, { method, body, token });
+    return demoCall(url, { method, body, token, user: authToken() });
   }
   const data = await r.json().catch(() => null);
-  if (data === null) return demoCall(url, { method, body, token });
+  if (data === null) return demoCall(url, { method, body, token, user: authToken() });
   if (!r.ok) throw Object.assign(new Error(data.error || 'Something went wrong'), { status: r.status });
   return data;
 }

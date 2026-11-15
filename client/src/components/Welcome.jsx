@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { api } from '../api.js';
 import { BIZ } from '../config.js';
+import { openAuth, useAuth } from '../auth.js';
 
 const KEY = 'mf-profile';
 const read = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; } };
@@ -12,6 +13,7 @@ const skipped = () => { try { return sessionStorage.getItem('mf-welcome-skip') =
  * admin panel under "Customers". The browser itself still asks permission before sharing the location.
  */
 export default function Welcome() {
+  const auth = useAuth();
   const [open, setOpen] = useState(() => !read() && !skipped() && !/^#\/admin/.test(location.hash));
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
@@ -43,7 +45,7 @@ export default function Welcome() {
   };
   const skip = () => { try { sessionStorage.setItem('mf-welcome-skip', '1'); } catch { /* ignore */ } setOpen(false); };
 
-  if (!open) return null;
+  if (!open || auth) return null;
   return (
     <div className="wl-overlay">
       <form className="wl" onSubmit={submit} role="dialog" aria-modal="true" aria-labelledby="wl-h">
@@ -67,6 +69,7 @@ export default function Welcome() {
         {err && <p className="wl-err" role="alert">{err}</p>}
         <button className="wl-go" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Continue'}</button>
         <button className="wl-skip" type="button" onClick={skip}>Skip for now</button>
+        <button className="wl-login" type="button" onClick={() => { skip(); openAuth('login'); }}>Already have an account? <b>Log in</b></button>
         <p className="wl-fine">Your name and location are saved on this device and shared with {BIZ.short} only to deliver your order.</p>
       </form>
     </div>

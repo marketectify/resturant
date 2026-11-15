@@ -19,8 +19,9 @@ function loadSaved() {
     const prof = JSON.parse(localStorage.getItem('mf-profile') || 'null'); // from the welcome screen
     const out = { ...EMPTY };
     if (prof && typeof prof === 'object') { if (typeof prof.name === 'string') out.name = prof.name; if (typeof prof.address === 'string') out.address = prof.address; }
-    if (!s || typeof s !== 'object') return out;
-    for (const k of REMEMBER) if (typeof s[k] === 'string' && s[k]) out[k] = s[k];
+    if (s && typeof s === 'object') for (const k of REMEMBER) if (typeof s[k] === 'string' && s[k]) out[k] = s[k];
+    const acc = JSON.parse(localStorage.getItem('mf-auth') || 'null')?.user; // logged-in customer
+    if (acc) { for (const k of ['name', 'phone', 'email', 'address', 'area']) if (typeof acc[k] === 'string' && acc[k]) out[k] = acc[k]; }
     if (!AREAS.includes(out.area)) out.area = AREAS[0];
     return out;
   } catch { return EMPTY; }

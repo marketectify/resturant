@@ -10,6 +10,7 @@ const I = {
   menu: svg(<path d="M4 5h16M4 12h16M4 19h10" />),
   heart: svg(<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" />),
   orders: svg(<path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6" />),
+  user: svg(<path d="M20 21v-1a6 6 0 0 0-6-6h-4a6 6 0 0 0-6 6v1M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />),
   table: svg(<path d="M5 4h14v4H5zM7 8v12M17 8v12M5 14h14" />),
 };
 
@@ -39,6 +40,7 @@ export function DashSide({ onMenu, active = 'home' }) {
           : link('', I.heart, 'Favourites', { href: '#/' })}
         {link(active === 'track' ? 'on' : '', I.orders, 'Track order', { href: '#/track' })}
         {link(active === 'book' ? 'on' : '', I.table, 'Book a table', { href: '#/book' })}
+        {link(active === 'account' ? 'on' : '', I.user, 'My account', { href: '#/account' })}
       </nav>
       <div className="ds-promo">
         <b>Faster delivery!</b>

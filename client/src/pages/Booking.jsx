@@ -4,12 +4,14 @@ import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
 import Icon from '../components/Icon.jsx';
 import { api } from '../api.js';
+import { useAuth } from '../auth.js';
 
 const EMPTY = { name: '', phone: '', date: '', time: '', guests: 2, note: '' };
 
 export default function Booking() {
   useDashLite();
-  const [f, setF] = useState(EMPTY);
+  const auth = useAuth();
+  const [f, setF] = useState(() => ({ ...EMPTY, name: auth?.user.name || '', phone: auth?.user.phone || '' }));
   const [state, setState] = useState({ status: 'idle', message: '' });
   const today = new Date().toLocaleDateString('en-CA'); // yyyy-mm-dd in the visitor's timezone
   const set = k => e => setF(p => ({ ...p, [k]: e.target.value }));

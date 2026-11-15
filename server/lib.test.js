@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HttpError, clean, findOrderForTracking, normalizeOrderType, makeToken, normalizePhone, priceOrder, verifyToken } from './lib.js';
+import { HttpError, clean, findOrderForTracking, normalizeOrderType, makeToken, normalizePhone, priceOrder, verifyToken, hashPassword, checkPassword, makeUserToken, verifyUserToken, parseIdentifier } from './lib.js';
 
 const menu = [
   { _id: '1', name: 'Chicken Tikka Chest', price: 540 },
@@ -71,4 +71,25 @@ test('admin tokens: valid, expired, tampered, wrong secret', () => {
   assert.equal(verifyToken('other', t, 5500), false);
   assert.equal(verifyToken('s3cret', t.replace(/^\d/, d => String((Number(d) + 1) % 10)), 5500), false);
   for (const bad of [undefined, null, '', 'x', '123.', '.abc', 42]) assert.equal(verifyToken('s3cret', bad, 5500), false);
+});
+
+test('passwords are hashed and verified', () => {
+  const h = hashPassword('secret1');
+  assert.notEqual(h, 'secret1');
+  assert.ok(checkPassword('secret1', h));
+  assert.ok(!checkPassword('secret2', h));
+});
+
+test('customer tokens carry the user id and cannot pass as admin tokens', () => {
+  const t = makeUserToken('k', '42', 1000, 0);
+  assert.equal(verifyUserToken('k', t, 500), '42');
+  assert.equal(verifyUserToken('k', t, 2000), null);
+  assert.equal(verifyUserToken('other', t, 500), null);
+  assert.equal(verifyToken('k', t, 500), false);
+});
+
+test('parseIdentifier accepts a mobile number or an e-mail', () => {
+  assert.deepEqual(parseIdentifier('0300-1234567'), { phone: '03001234567' });
+  assert.deepEqual(parseIdentifier(' A@B.com '), { email: 'a@b.com' });
+  assert.equal(parseIdentifier('nope'), null);
 });

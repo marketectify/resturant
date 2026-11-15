@@ -888,7 +888,6 @@ body { background: var(--bg); padding-bottom: 96px; }
   html.is-dash .dash-only { display: block; }
   html.is-dash .wa-fab { right: 360px; bottom: 28px; width: 60px; height: 60px; }
   html.is-dash .top-fab { right: 360px; bottom: 100px; }
-  html.is-dash .footer { margin: 30px -372px 0 -264px; padding-left: 264px; padding-right: 372px; }
   html.is-dash .cat-banner, html.is-dash .menu-sec { scroll-margin-top: 24px; }
 
   /* left panel */
@@ -967,7 +966,6 @@ body { background: var(--bg); padding-bottom: 96px; }
 @media (min-width: 1100px) and (max-width: 1299px) {
   html.is-dash body { padding-right: 20px; }
   html.is-dash .dash-right { display: none !important; }
-  html.is-dash .footer { margin-right: -20px; padding-right: 20px; }
   html.is-dash .wa-fab, html.is-dash .top-fab { right: 22px; }
 }
 
@@ -1022,4 +1020,51 @@ body { background: var(--bg); padding-bottom: 96px; }
 }
 @media (min-width: 1100px) {
   html.is-dash .menu-sec .menu-grid { grid-template-columns: repeat(auto-fill, minmax(205px, 1fr)); }
+}
+
+
+/* ===== New footer ===== */
+.sf { padding: 40px 20px 28px; }
+.sf-card { width: min(1200px, 100%); margin: 0 auto; padding: 34px; background: #141416; color: #ffffffb8; border-radius: 34px; box-shadow: 0 20px 50px #0000002e; }
+.sf-cta { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; padding: 26px 28px; margin-bottom: 34px; border-radius: 24px; background: linear-gradient(120deg, #2a2a2f, #1d1d21); border: 1px solid #ffffff14; }
+.sf-cta h3 { color: #fff; font-size: 24px; letter-spacing: -.5px; }
+.sf-cta p { margin-top: 6px; max-width: 460px; font-size: 14.5px; line-height: 1.5; }
+.sf-cta-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+.sf-btn { display: inline-flex; align-items: center; gap: 8px; height: 50px; padding: 0 24px; border-radius: 99px; font-size: 15px; font-weight: 700; transition: transform .2s; }
+.sf-btn:hover { transform: translateY(-2px); }
+.sf-btn.light { background: #fff; color: var(--ink); }
+.sf-btn.green { background: var(--green); color: #fff; }
+.sf-grid { display: grid; grid-template-columns: 1.4fr 1.2fr .8fr; gap: 40px; }
+.sf-logo { display: inline-grid; justify-items: center; align-content: center; width: 70px; height: 70px; border-radius: 50%; background: #fff; color: var(--ink); line-height: 1; margin-bottom: 14px; }
+.sf-logo b { font-size: 16px; font-weight: 800; letter-spacing: -1px; }
+.sf-logo i { margin-top: 3px; color: #8a8a92; font-size: 7px; font-style: normal; font-weight: 600; letter-spacing: 2.2px; }
+.sf-brand h4 { color: #fff; font-size: 19px; }
+.sf-brand p { margin-top: 8px; max-width: 340px; font-size: 14px; line-height: 1.6; }
+.sf h5 { margin-bottom: 14px; color: #fff; font-size: 13px; letter-spacing: 1.2px; text-transform: uppercase; }
+.sf-list, .sf-links { list-style: none; display: grid; gap: 12px; padding: 0; margin: 0; }
+.sf-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14.5px; line-height: 1.4; }
+.sf-list li svg { flex: none; width: 34px; height: 34px; padding: 8px; border-radius: 12px; background: #ffffff12; color: #fff; margin-top: -4px; }
+.sf-list a:hover, .sf-links a:hover, .sf-map:hover { color: #fff; }
+.sf-map { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; color: #fff; font-size: 13.5px; font-weight: 600; }
+.sf-links a { display: inline-block; font-size: 14.5px; transition: transform .2s, color .2s; }
+.sf-links a:hover { transform: translateX(4px); }
+.sf-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px 20px; flex-wrap: wrap; margin-top: 32px; padding-right: 84px; padding-top: 20px; border-top: 1px solid #ffffff1a; font-size: 12.5px; color: #ffffff7a; }
+.sf-bottom a { color: #ffffffb0; }
+.sf-bottom a:hover { color: #fff; text-decoration: underline; }
+@media (max-width: 900px) {
+  .sf-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
+  .sf-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 700px) {
+  .sf { padding: 26px 12px 118px; }
+  .sf-card { padding: 20px 18px; border-radius: 28px; }
+  .sf-cta { padding: 20px; margin-bottom: 26px; }
+  .sf-cta h3 { font-size: 20px; }
+  .sf-cta-btns { width: 100%; }
+  .sf-btn { flex: 1; justify-content: center; padding: 0 14px; }
+  .sf-grid { grid-template-columns: 1fr; gap: 26px; }
+  .sf-bottom { padding-right: 0; flex-direction: column; align-items: flex-start; }
+}
+@media (min-width: 1100px) {
+  html.is-dash .sf { padding: 30px 0 20px; }
 }

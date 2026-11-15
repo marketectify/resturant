@@ -50,7 +50,7 @@ export default function BottomNav() {
       <nav className="bnav" aria-label="Main navigation">
         <span className="bnav-bg" aria-hidden="true">
           <i className="l" />
-          <svg viewBox="0 0 100 58" width="100" height="58" preserveAspectRatio="none"><path d="M0 0H10.31A8 8 0 0 1 18.25 7A32 32 0 0 0 81.75 7A8 8 0 0 1 89.69 0H100V58H0Z" /></svg>
+          <svg viewBox="0 0 100 58" width="100" height="58" preserveAspectRatio="none"><path d="M0 0H5.33A14 14 0 0 1 18.93 10.65A32 32 0 0 0 81.07 10.65A14 14 0 0 1 94.67 0H100V58H0Z" /></svg>
           <i className="r" />
         </span>
         <button className={route === '/' ? 'on' : ''} onClick={home}>{HomeIc}<span>Home</span></button>

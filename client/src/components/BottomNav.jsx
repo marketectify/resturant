@@ -48,6 +48,11 @@ export default function BottomNav() {
   return (
     <>
       <nav className="bnav" aria-label="Main navigation">
+        <span className="bnav-bg" aria-hidden="true">
+          <i className="l" />
+          <svg viewBox="0 0 100 58" width="100" height="58" preserveAspectRatio="none"><path d="M0 0H10.31A8 8 0 0 1 18.25 7A32 32 0 0 0 81.75 7A8 8 0 0 1 89.69 0H100V58H0Z" /></svg>
+          <i className="r" />
+        </span>
         <button className={route === '/' ? 'on' : ''} onClick={home}>{HomeIc}<span>Home</span></button>
         <button onClick={() => setSearchOpen(true)}><Icon name="search" size={24} /><span>Search</span></button>
         <button className="bnav-cart" onClick={() => setDrawerOpen(true)} aria-label={`Open cart, ${count} items`}>

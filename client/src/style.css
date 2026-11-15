@@ -1236,3 +1236,10 @@ body { background: var(--bg); padding-bottom: 96px; }
 .ot-ic, .pay-ic { color: var(--ink); }
 .ic-line { display: flex; align-items: center; gap: 8px; }
 .item-ic { color: var(--ink); }
+
+/* bottom bar: equal side columns so the cart button is always exactly in the middle */
+.bnav { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 78px minmax(0, 1fr) minmax(0, 1fr); }
+.bnav > button, .bnav > a { min-width: 0; }
+.bnav > button span, .bnav > a span { max-width: 100%; overflow: hidden; text-overflow: clip; white-space: nowrap; }
+.bnav-cart { justify-self: center; }
+@media (max-width: 360px) { .bnav > button, .bnav > a { font-size: 9.5px; } }

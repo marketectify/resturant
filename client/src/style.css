@@ -870,7 +870,8 @@ body { background: var(--bg); padding-bottom: 96px; }
 .pm-blur { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: #e9e9ec; }
 .pm-blur .thumb { width: 100%; height: 100%; transform: scale(1.5); filter: blur(30px) saturate(1.25); opacity: .75; border-radius: 0; }
 .pm-blur::after { content: ''; position: absolute; inset: 0; background: linear-gradient(#ffffff40, #efeff1 96%); }
-.pm-plate { z-index: 2; border: 5px solid #ffffffcc; }
+.pm-plate { z-index: 2; border: 0; background: none; box-shadow: none; }
+.pm-hero { background: #fff; }
 .pm-sheet { background: #ffffffd9; backdrop-filter: blur(22px) saturate(1.4); -webkit-backdrop-filter: blur(22px) saturate(1.4); box-shadow: 0 -10px 40px #0000001a; }
 .top-cat b, .top-cat small { align-self: flex-start; text-align: left; }
 @media (max-width: 700px) {

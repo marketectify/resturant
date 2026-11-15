@@ -88,3 +88,6 @@ Menu photos without a local file are hot-linked from Unsplash (map by name/categ
 
 ## Welcome screen (name + location)
 On a customer's first visit a welcome card asks for a name and (optionally) their location (browser permission) and area. It is saved in the browser (`mf-profile`, also pre-fills checkout) and POSTed to `/api/visitors`; the admin sees it under **Customers** with a Google Maps link. Limited to 10 submissions per hour per IP.
+
+## Per-dish photos
+`client/src/photos.js` has a `NAMED` map: one different Unsplash photo for every dish (picked from Unsplash search results by their captions, so a few may not be a perfect match: just change that entry). A real photo placed in `client/public/menu/<slug>.jpg` always wins.

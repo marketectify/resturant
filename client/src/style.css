@@ -1282,3 +1282,15 @@ body { background: var(--bg); padding-bottom: 96px; }
 .lb-img.thumb-blank { width: min(70vw, 420px) !important; height: min(70vw, 420px) !important; }
 .lb-x { position: absolute; top: 16px; right: 16px; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #fff; color: var(--ink); }
 .lb-cap { margin: 0; color: #fff; font-weight: 600; font-size: 15px; text-align: center; }
+
+/* count badge on the Favourites tab (same red/orange as the cart badge) */
+.bnav-ic { position: relative; display: grid; place-items: center; }
+.bnav-badge { position: absolute; top: -6px; right: -10px; min-width: 18px; height: 18px; padding: 0 5px; display: grid; place-items: center; border-radius: 99px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; line-height: 1; box-shadow: 0 0 0 2px #fff; animation: pop .3s; }
+
+/* no blue flash when tapping on phones */
+* { -webkit-tap-highlight-color: transparent; }
+button, a, .card, .chip, .top-cat, .pm-plate, .heart, .bnav > * { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
+img { -webkit-user-drag: none; user-select: none; -webkit-user-select: none; }
+input, textarea, select { user-select: text; -webkit-user-select: text; }
+button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none; }
+.bnav > button span.bnav-ic { overflow: visible; max-width: none; }

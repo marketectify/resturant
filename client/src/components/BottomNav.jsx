@@ -21,6 +21,13 @@ export default function BottomNav() {
   const [route, setRoute] = useState(hash);
   const [favOpen, setFavOpen] = useState(false);
   const [ids, setIds] = useState([]);
+  const [favCount, setFavCount] = useState(() => favIds().length);
+  useEffect(() => {
+    const on = () => setFavCount(favIds().length);
+    window.addEventListener('favs-change', on);
+    window.addEventListener('storage', on);
+    return () => { window.removeEventListener('favs-change', on); window.removeEventListener('storage', on); };
+  }, []);
   useEffect(() => {
     const on = () => setRoute(hash());
     window.addEventListener('hashchange', on);
@@ -59,7 +66,7 @@ export default function BottomNav() {
           <Icon name="bag" size={28} />
           {count > 0 && <b key={count}>{count}</b>}
         </button>
-        <button onClick={openFav}>{HeartIc}<span>Favourites</span></button>
+        <button className="bnav-fav" onClick={openFav}><span className="bnav-ic">{HeartIc}{favCount > 0 && <b key={favCount} className="bnav-badge">{favCount}</b>}</span><span>Favourites</span></button>
         <a className={route === '/track' ? 'on' : ''} href="#/track">{OrdersIc}<span>Orders</span></a>
       </nav>
 

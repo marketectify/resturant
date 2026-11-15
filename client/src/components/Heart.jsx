@@ -19,6 +19,7 @@ export default function Heart({ id, className = '' }) {
     const now = read();
     const next = now.includes(id) ? now.filter(x => x !== id) : [...now, id];
     write(next); setOn(next.includes(id));
+    window.dispatchEvent(new Event('favs-change')); // updates the badge on the Favourites tab
     if (authToken()) api('/api/me', { method: 'PATCH', body: { favs: next } }).catch(() => {}); // keep the account's favourites in step
   };
   return (

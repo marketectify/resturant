@@ -1189,3 +1189,11 @@ body { background: var(--bg); padding-bottom: 96px; }
 .bnav::after { content: ''; position: absolute; z-index: -1; left: 50%; top: 4px; width: 86px; height: 86px; transform: translate(-50%, -50%); border-radius: 50%; background: var(--bg); }
 .chip-img .thumb { transition: transform .45s cubic-bezier(.2, .8, .3, 1); }
 .chip:hover .chip-img .thumb, .chip:focus-visible .chip-img .thumb { transform: scale(1.25); }
+
+/* generic auto-scroll strip (category chips, "often order with") */
+.as-item { flex: none; display: flex; }
+.as-solo .top-arrow { display: none !important; }
+.pm-strip .top-marquee { padding: 4px 4px 12px; margin: 0 -4px; -webkit-mask-image: none; mask-image: none; }
+.pm-strip .top-track { gap: 10px; }
+.pm-strip .pm-mini { height: 100%; }
+.as-solo .as-dup { display: none; }

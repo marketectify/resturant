@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Icon from './Icon.jsx';
 import Thumb from './Thumb.jsx';
+import AutoStrip from './AutoStrip.jsx';
 import Heart from './Heart.jsx';
 import { useStore } from '../store.jsx';
 import { rs, BIZ } from '../config.js';
@@ -85,9 +86,10 @@ export default function ProductModal() {
             {pairs.length > 0 && (
               <section aria-label="Often order with">
                 <h3>Often order with</h3>
-                <div className="pm-pair-row">
-                  {pairs.map(m => (
-                    <div className="pm-mini" key={m._id}>
+                <AutoStrip className="pm-strip" trackClass="pm-track" items={pairs.map(m => ({
+                  key: m._id,
+                  node: (
+                    <div className="pm-mini">
                       <div className="pm-mini-img"><Thumb item={m} /></div>
                       <span>{m.name}</span>
                       <b>{rs(m.price)}</b>
@@ -95,8 +97,8 @@ export default function ProductModal() {
                         {inCart(m._id) ? inCart(m._id) : <Icon name="plus" size={14} stroke={3} />}
                       </button>
                     </div>
-                  ))}
-                </div>
+                  ),
+                }))} />
               </section>
             )}
           </div>

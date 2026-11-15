@@ -1227,3 +1227,12 @@ body { background: var(--bg); padding-bottom: 96px; }
   .logo-badge { --s: .56; }
   .logo-badge b { letter-spacing: -1.5px; }
 }
+
+/* real (line) icons instead of emoji */
+.pm-facts li { color: var(--ink); }
+.pm-facts li svg { color: var(--ink); }
+.pm-deal > span { display: grid; place-items: center; }
+.pm-deal > span svg { color: #8a6400; }
+.ot-ic, .pay-ic { color: var(--ink); }
+.ic-line { display: flex; align-items: center; gap: 8px; }
+.item-ic { color: var(--ink); }

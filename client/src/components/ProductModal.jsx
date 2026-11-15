@@ -60,9 +60,9 @@ export default function ProductModal() {
             <span className="pm-cat">{item.cat}</span>
 
             <ul className="pm-facts">
-              <li>🚚<span>Delivery or pickup</span></li>
-              <li>💵<span>Cash on delivery</span></li>
-              <li>📞<span>{BIZ.phone}</span></li>
+              <li><Icon name="truck" size={22} /><span>Delivery or pickup</span></li>
+              <li><Icon name="cash" size={22} /><span>Cash on delivery</span></li>
+              <li><Icon name="phone" size={22} /><span>{BIZ.phone}</span></li>
             </ul>
 
             <div className="pm-qtyrow">
@@ -81,7 +81,7 @@ export default function ProductModal() {
                 {item.details && <p className="pm-desc">{item.details}</p>}
               </section>
             )}
-            {deal && <div className="pm-deal"><span aria-hidden="true">🏷️</span><div><b>Deal</b><p>{deal}</p></div></div>}
+            {deal && <div className="pm-deal"><span aria-hidden="true"><Icon name="tag" size={20} /></span><div><b>Deal</b><p>{deal}</p></div></div>}
 
             {pairs.length > 0 && (
               <section aria-label="Often order with">

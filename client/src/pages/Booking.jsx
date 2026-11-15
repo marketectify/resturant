@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DashSide, useDashLite } from '../components/DashChrome.jsx';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
 import Icon from '../components/Icon.jsx';
@@ -7,6 +8,7 @@ import { api } from '../api.js';
 const EMPTY = { name: '', phone: '', date: '', time: '', guests: 2, note: '' };
 
 export default function Booking() {
+  useDashLite();
   const [f, setF] = useState(EMPTY);
   const [state, setState] = useState({ status: 'idle', message: '' });
   const today = new Date().toLocaleDateString('en-CA'); // yyyy-mm-dd in the visitor's timezone
@@ -26,6 +28,7 @@ export default function Booking() {
 
   return (
     <>
+      <DashSide active="book" />
       <Header />
       <div className="page single">
         <form className="panel" onSubmit={submit}>

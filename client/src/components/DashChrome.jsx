@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import Icon from './Icon.jsx';
 import Thumb from './Thumb.jsx';
 import { useStore } from '../store.jsx';
@@ -13,19 +14,31 @@ const I = {
 };
 
 /** Laptop layout only (hidden by CSS on phones and tablets): left navigation panel + right panel with offer and live cart. */
-export function DashSide({ onMenu }) {
+export function useDashLite() {
+  useEffect(() => {
+    const h = document.documentElement;
+    h.classList.add('is-dash', 'is-dash-lite');
+    return () => h.classList.remove('is-dash', 'is-dash-lite');
+  }, []);
+}
+
+export function DashSide({ onMenu, active = 'home' }) {
   const link = (cls, icon, label, props) => <a className={cls} {...props}>{icon}<span>{label}</span></a>;
   return (
     <aside className="dash-side dash-only" aria-label="Navigation">
-      <a className="ds-logo" href="#/" onClick={e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+      <a className="ds-logo" href="#/" onClick={e => { if (active === 'home') { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }}>
         <b>master</b><i>FOODS</i>
       </a>
       <nav>
-        <button className="on" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>{I.home}<span>Home</span></button>
-        <button onClick={onMenu}>{I.menu}<span>Menu</span></button>
-        <button onClick={() => window.dispatchEvent(new Event('open-favs'))}>{I.heart}<span>Favourites</span></button>
-        {link('', I.orders, 'Track order', { href: '#/track' })}
-        {link('', I.table, 'Book a table', { href: '#/book' })}
+        {active === 'home'
+          ? <button className="on" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>{I.home}<span>Home</span></button>
+          : link('', I.home, 'Home', { href: '#/' })}
+        {onMenu ? <button onClick={onMenu}>{I.menu}<span>Menu</span></button> : link('', I.menu, 'Menu', { href: '#/' })}
+        {active === 'home'
+          ? <button onClick={() => window.dispatchEvent(new Event('open-favs'))}>{I.heart}<span>Favourites</span></button>
+          : link('', I.heart, 'Favourites', { href: '#/' })}
+        {link(active === 'track' ? 'on' : '', I.orders, 'Track order', { href: '#/track' })}
+        {link(active === 'book' ? 'on' : '', I.table, 'Book a table', { href: '#/book' })}
       </nav>
       <div className="ds-promo">
         <b>Faster delivery!</b>

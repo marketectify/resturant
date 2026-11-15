@@ -885,7 +885,7 @@ body { background: var(--bg); padding-bottom: 96px; }
 @media (min-width: 1100px) {
   html.is-dash { --top-h: 0px; --bar-h: 0px; }
   html.is-dash body { padding: 24px 372px 0 264px; }
-  html.is-dash .topbar, html.is-dash .m-search, html.is-dash .top-cats, html.is-dash .bnav, html.is-dash .pillbar { display: none !important; }
+  html.is-dash .topbar, html.is-dash .m-search, html.is-dash .bnav, html.is-dash .pillbar { display: none !important; }
   html.is-dash .dash-only { display: block; }
   html.is-dash .wa-fab { right: 360px; bottom: 28px; width: 60px; height: 60px; }
   html.is-dash .top-fab { right: 360px; bottom: 100px; }
@@ -1151,3 +1151,10 @@ body { background: var(--bg); padding-bottom: 96px; }
 .acc-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .acc-form .wl-inp { width: 100%; box-sizing: border-box; }
 @media (max-width: 600px) { .acc-form { grid-template-columns: minmax(0, 1fr); } }
+
+/* laptop: the same slow auto-scrolling categories strip, under the dashboard header */
+@media (min-width: 1100px) {
+  html.is-dash .top-cats { width: auto; margin: 18px 0 0; }
+  html.is-dash .top-cats h2 { font-size: 20px; }
+  html.is-dash .top-track .top-cat { width: 180px; }
+}

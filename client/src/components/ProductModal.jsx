@@ -10,15 +10,18 @@ import { rs, BIZ } from '../config.js';
 export default function ProductModal() {
   const { detail: item, setDetail, menu, add, lines, setDrawerOpen } = useStore();
   const [qty, setQty] = useState(1);
+  const [zoom, setZoom] = useState(false); // full-size photo viewer
   const closeRef = useRef(null);
+  const zoomRef = useRef(false);
+  useEffect(() => { zoomRef.current = zoom; }, [zoom]);
   const close = () => setDetail(null);
 
   useEffect(() => {
     if (!item) return undefined;
-    setQty(1);
+    setQty(1); setZoom(false);
     document.body.style.overflow = 'hidden';
     closeRef.current?.focus();
-    const onKey = e => e.key === 'Escape' && setDetail(null);
+    const onKey = e => { if (e.key === 'Escape') { if (zoomRef.current) { zoomRef.current = false; setZoom(false); } else setDetail(null); } };
     window.addEventListener('keydown', onKey);
     return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey); };
   }, [item, setDetail]);
@@ -47,8 +50,11 @@ export default function ProductModal() {
 
         <div className="pm-scroll">
           <div className="pm-hero">
-            <span className="pm-ground" aria-hidden="true" />
-            <div className="pm-plate"><Thumb key={item._id} item={item} /></div>
+            <div className="pm-deco" aria-hidden="true"><i className="r1" /><i className="r2" /><i className="r3" /><b className="d1" /><b className="d2" /><b className="d3" /><b className="d4" /></div>
+            <button type="button" className="pm-plate" onClick={() => setZoom(true)} aria-label="View full photo">
+              <Thumb key={item._id} item={item} />
+              <span className="pm-zoom"><Icon name="expand" size={16} stroke={2.4} /></span>
+            </button>
             {item.badge && <span className="pm-badge">{item.badge}</span>}
           </div>
 
@@ -109,6 +115,13 @@ export default function ProductModal() {
           <button className="pm-btn dark" onClick={order}>Order · {rs(item.price * qty)}</button>
         </div>
       </div>
+      {zoom && (
+        <div className="lb" role="dialog" aria-modal="true" aria-label="Photo" onClick={e => { e.stopPropagation(); setZoom(false); }}>
+          <button type="button" className="lb-x" aria-label="Close photo" onClick={e => { e.stopPropagation(); setZoom(false); }}><Icon name="close" size={22} stroke={2.4} /></button>
+          <Thumb key={'z' + item._id} item={item} className="lb-img" />
+          <p className="lb-cap">{item.name}</p>
+        </div>
+      )}
     </div>
   );
 }

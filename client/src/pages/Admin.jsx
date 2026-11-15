@@ -1,3 +1,4 @@
+import Icon from '../components/Icon.jsx';
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../api.js';
 import { rs } from '../config.js';
@@ -168,7 +169,6 @@ export default function Admin() {
                 <option value="" disabled>Choose category</option>
                 {cats.map(c => <option key={c._id} value={c.name}>{c.name}</option>)}
               </select>
-              <input placeholder="Emoji" maxLength={8} value={form.emoji} onChange={e => setForm({ ...form, emoji: e.target.value })} />
               <input placeholder="Description (optional)" value={form.desc} onChange={e => setForm({ ...form, desc: e.target.value })} />
               <input placeholder="Badge (e.g. New Arrival)" value={form.badge} onChange={e => setForm({ ...form, badge: e.target.value })} />
               <input type="url" placeholder="Image URL (optional)" value={form.img} onChange={e => setForm({ ...form, img: e.target.value })} />
@@ -187,7 +187,7 @@ export default function Admin() {
               {shown.length === 0 && <tr><td colSpan="5" className="muted">No items found.</td></tr>}
               {shown.map(m => (
                 <tr key={m._id}>
-                  <td><div className="item-cell"><span className="item-ic">{m.emoji || '🍽️'}</span><span><b>{m.name}</b><small>{m.desc}</small></span></div></td>
+                  <td><div className="item-cell"><span className="item-ic"><Icon name="utensils" size={20} /></span><span><b>{m.name}</b><small>{m.desc}</small></span></div></td>
                   <td>{m.cat}</td>
                   <td><b>{rs(m.price)}</b></td>
                   <td>{m.badge ? <span className="st">{m.badge}</span> : <small>—</small>}</td>
@@ -264,7 +264,6 @@ export default function Admin() {
             <form onSubmit={saveCat} className="mf panel-form">
               <h3>{catForm._id ? 'Edit category' : 'New category'}</h3>
               <input required placeholder="Category name" value={catForm.name} onChange={e => setCatForm({ ...catForm, name: e.target.value })} />
-              <input placeholder="Emoji (optional)" maxLength={8} value={catForm.emoji} onChange={e => setCatForm({ ...catForm, emoji: e.target.value })} />
               <div className="form-actions">
                 <button className="btn-primary slim" type="submit">{catForm._id ? 'Save changes' : 'Add category'}</button>
                 <button className="btn-cancel" type="button" onClick={() => setCatForm(null)}>Cancel</button>
@@ -277,7 +276,7 @@ export default function Admin() {
               {cats.length === 0 && <tr><td colSpan="3" className="muted">No categories yet.</td></tr>}
               {cats.map(c => (
                 <tr key={c._id}>
-                  <td><div className="item-cell"><span className="item-ic">{c.emoji || '📁'}</span><b>{c.name}</b></div></td>
+                  <td><div className="item-cell"><span className="item-ic"><Icon name="folder" size={20} /></span><b>{c.name}</b></div></td>
                   <td>{c.count}</td>
                   <td className="act">
                     <button className="icon-btn" onClick={() => setCatForm({ _id: c._id, name: c.name, emoji: c.emoji || '' })} aria-label={`Edit ${c.name}`} title="Edit">{EditIc}</button>

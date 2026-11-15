@@ -125,7 +125,7 @@ export default function Checkout() {
       {done ? <Done done={done} /> : count === 0 ? (
         <div className="page single">
           <section className="panel done">
-            <span className="done-ic soft">🛒</span>
+            <span className="done-ic soft"><Icon name="cart" size={34} stroke={1.8} /></span>
             <h2>Your cart is empty</h2>
             <p className="muted">Add some items from the menu to continue.</p>
             <a className="btn-primary slim" href="#/">Browse menu</a>
@@ -136,7 +136,7 @@ export default function Checkout() {
           <section className="panel">
             <h2>Checkout</h2>
             <div className="ordertype">
-              <span className="ot-ic">{pickup ? '🛍️' : '🛵'}</span>
+              <span className="ot-ic"><Icon name={pickup ? 'bag' : 'bike'} size={28} stroke={1.8} /></span>
               <div className="ot-text">
                 <p>This is a <strong className="ot-pill">{pickup ? 'Pickup Order' : 'Delivery Order'}</strong></p>
                 <small>Just a last step, please enter your details:</small>
@@ -176,8 +176,8 @@ export default function Checkout() {
             {pickup ? (
               <div className="pickup-info">
                 <b>Pick up from</b>
-                <p>📍 {BIZ.address}</p>
-                <p>🕒 {BIZ.hours}</p>
+                <p className="ic-line"><Icon name="pin" size={16} /> {BIZ.address}</p>
+                <p className="ic-line"><Icon name="clock" size={16} /> {BIZ.hours}</p>
                 <a href={BIZ.map} target="_blank" rel="noreferrer">Open in Google Maps</a>
               </div>
             ) : (
@@ -214,7 +214,7 @@ export default function Checkout() {
               <span className="lab"><span>Payment Method</span></span>
               <div className="pay-opt" role="radiogroup" aria-label="Payment method">
                 <span className="radio on" role="radio" aria-checked="true" />
-                <span className="pay-ic">💵</span>
+                <span className="pay-ic"><Icon name="cash" size={28} stroke={1.8} /></span>
                 <div>
                   <b>{pickup ? 'Cash at pickup' : 'Cash on Delivery'}</b>
                   <small>{pickup ? 'Pay when you collect your order.' : 'Pay the rider when your order arrives.'}</small>

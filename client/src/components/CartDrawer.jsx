@@ -41,7 +41,7 @@ export default function CartDrawer() {
         <div className="drawer-body">
           {count === 0 ? (
             <div className="empty">
-              <span>🛒</span>
+              <span><Icon name="cart" size={44} stroke={1.5} /></span>
               <h3>Your cart is empty</h3>
               <p>Add something delicious from the menu.</p>
               <button className="btn-primary slim" onClick={close}>Browse menu</button>

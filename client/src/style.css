@@ -1297,3 +1297,21 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none; }
 
 /* count badge on the laptop sidebar's Favourites item */
 .ds-badge { margin-left: auto; min-width: 22px; height: 22px; padding: 0 7px; display: grid; place-items: center; border-radius: 99px; background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; line-height: 1; animation: pop .3s; }
+
+/* search pop-up: never wider than the screen */
+.search-modal { grid-template-columns: minmax(0, 1fr); box-sizing: border-box; overflow: hidden; }
+.search-box { box-sizing: border-box; width: min(640px, 100%); min-width: 0; max-height: calc(100dvh - 110px); justify-self: center; }
+.search-input { box-sizing: border-box; }
+.search-row { min-width: 0; }
+.search-row h4 { overflow-wrap: anywhere; line-height: 1.25; }
+.search-row > b { flex: none; font-size: 14px; }
+@media (max-width: 600px) {
+  .search-modal { padding: 76px 12px 12px; }
+  .search-box { padding: 10px; border-radius: 22px; }
+  .search-input { height: 52px; padding-left: 14px; }
+  .search-input input { font-size: 16px; } /* 16px stops iPhones zooming in when the box is tapped */
+  .search-row { gap: 10px; padding: 8px 4px; }
+  .search-row .line-thumb { width: 48px; height: 48px; }
+  .search-row h4 { font-size: 14.5px; }
+}
+.search-input .round.soft { background: var(--soft); color: var(--ink); }

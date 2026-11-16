@@ -1315,3 +1315,43 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none; }
   .search-row h4 { font-size: 14.5px; }
 }
 .search-input .round.soft { background: var(--soft); color: var(--ink); }
+
+/* ===== Checkout / forms on phones: normal-sized fields and text ===== */
+@media (max-width: 700px) {
+  .page { margin: 18px auto 150px; gap: 14px; }
+  .panel { padding: 18px 16px; border-radius: 22px; }
+  .panel h2 { font-size: 21px; }
+  .panel .sub { margin: 4px 0 14px; font-size: 13.5px; }
+  .ordertype { gap: 12px; margin: 14px 0 16px; padding: 12px 14px; border-radius: 16px; }
+  .ordertype p { font-size: 14.5px; line-height: 1.35; }
+  .ordertype small { font-size: 12.5px; }
+  .ot-pill { padding: 2px 10px 3px; font-size: 14px; }
+  .ot-ic { width: 40px !important; height: 40px !important; border-radius: 12px !important; }
+  .ot-ic svg { width: 22px; height: 22px; }
+  .seg { padding: 3px; }
+  .seg button { padding: 7px 14px; font-size: 13px; }
+  .lab { min-height: 20px; margin-bottom: 6px; font-size: 13.5px; }
+  .lab .req { padding: 2px 8px; font-size: 11px; }
+  .inp, .inp-group { height: 46px; border-radius: 12px; }
+  .inp { padding: 0 14px; font-size: 16px; } /* 16px keeps iPhones from zooming in on focus */
+  .inp-group input { padding: 0 14px; font-size: 16px; }
+  .inp-group select { font-size: 13.5px; padding: 0 10px; }
+  select.inp { background-position: right 12px center; padding-right: 34px; }
+  .inp.ta { height: 78px; padding: 10px 14px; }
+  .row-title { grid-template-columns: 96px minmax(0, 1fr); gap: 10px; margin-bottom: 12px; }
+  .grid2 { gap: 12px; margin-bottom: 12px; }
+  .addr { margin-bottom: 12px; padding: 12px; border-radius: 16px; }
+  .mt { margin-top: 12px; }
+  .err { font-size: 12.5px; }
+  .pay-opt { gap: 10px; padding: 11px 14px; border-radius: 14px; }
+  .pay-ic svg { width: 22px; height: 22px; }
+  .pay-opt b { font-size: 14px; }
+  .pay-opt small { font-size: 12px; }
+  .remember { margin-top: 14px; font-size: 13.5px; }
+  .continue { margin-top: 14px; font-size: 14.5px; }
+  .sum-item { gap: 10px; padding: 8px 0; }
+  .sum-item h4, .sum-item b { font-size: 14px; }
+  .panel.side h2, .panel.side h3 { font-size: 18px; }
+  .btn-primary { height: 48px; font-size: 15px; }
+  .done-ic { width: 64px; height: 64px; }
+}

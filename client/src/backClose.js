@@ -26,7 +26,11 @@ export function useBackClose(open, close) {
       const i = stack.indexOf(entry);
       if (i < 0) return; // already closed by the Back button
       stack.splice(i, 1);
-      if (history.state && history.state.ov) { ignore += 1; history.back(); } // closed with X: drop our entry
+      // Closed with its own X: drop our history entry. Done after the click finishes, so that a link which closes the
+      // pop-up *and* navigates (e.g. cart -> Checkout) is not undone by this history.back().
+      setTimeout(() => {
+        if (history.state && history.state.ov) { ignore += 1; history.back(); }
+      }, 0);
     };
   }, [open]);
 }

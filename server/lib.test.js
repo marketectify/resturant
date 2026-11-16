@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { HttpError, clean, findOrderForTracking, normalizeOrderType, makeToken, normalizePhone, priceOrder, verifyToken, hashPassword, checkPassword, makeUserToken, verifyUserToken, parseIdentifier } from './lib.js';
+import { HttpError, clean, findOrderForTracking, normalizeOrderType, makeToken, normalizePhone, priceOrder, verifyToken, hashPassword, checkPassword, makeUserToken, verifyUserToken, parseIdentifier, withPageMeta } from './lib.js';
 
 const menu = [
   { _id: '1', name: 'Chicken Tikka Chest', price: 540 },
@@ -92,4 +92,15 @@ test('parseIdentifier accepts a mobile number or an e-mail', () => {
   assert.deepEqual(parseIdentifier('0300-1234567'), { phone: '03001234567' });
   assert.deepEqual(parseIdentifier(' A@B.com '), { email: 'a@b.com' });
   assert.equal(parseIdentifier('nope'), null);
+});
+
+test('withPageMeta swaps title, description and url for inner pages only', () => {
+  const html = '<head><title>Home</title><meta name="description" content="d" /><link rel="canonical" href="https://x.com/" /><meta property="og:title" content="t" /><meta property="og:description" content="d" /><meta property="og:url" content="https://x.com/" /><meta name="twitter:title" content="t" /><meta name="twitter:description" content="d" /></head>';
+  const out = withPageMeta(html, '/checkout/');
+  assert.match(out, /<title>Checkout \| Master Foods/);
+  assert.match(out, /og:url" content="https:\/\/x\.com\/checkout"/);
+  assert.match(out, /robots" content="noindex"/);
+  assert.equal(withPageMeta(html, '/'), null);
+  assert.equal(withPageMeta(html, '/api/menu'), null);
+  assert.doesNotMatch(withPageMeta(html, '/book'), /noindex/);
 });

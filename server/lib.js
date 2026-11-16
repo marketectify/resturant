@@ -116,3 +116,33 @@ export function parseIdentifier(v) {
   const ph = normalizePhone(t);
   return ph ? { phone: ph } : null;
 }
+
+// ---------- Link previews for the inner pages (WhatsApp / Facebook / Google read the HTML, not the #hash) ----------
+export const PAGE_META = {
+  '/checkout': { title: 'Checkout | Master Foods & Pakwan Centre', desc: 'Complete your order from Master Foods & Pakwan Centre, Karachi. Cash on delivery and fast home delivery.', noindex: true },
+  '/track': { title: 'Track your order | Master Foods & Pakwan Centre', desc: 'Check the live status of your Master Foods & Pakwan Centre order with your order number and phone.', noindex: true },
+  '/book': { title: 'Book a table | Master Foods & Pakwan Centre', desc: 'Reserve a table at Master Foods & Pakwan Centre, Karachi. Pick a date, time and number of guests.' },
+  '/account': { title: 'My account | Master Foods & Pakwan Centre', desc: 'Log in to see your orders, bookings and favourites at Master Foods & Pakwan Centre.', noindex: true },
+};
+
+const esc = v => String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+/** Returns index.html with the title / description / URL of one inner page swapped in, or null if `pathname` is not an inner page. */
+export function withPageMeta(html, pathname) {
+  const key = String(pathname || '').replace(/\/+$/, '').toLowerCase();
+  const m = PAGE_META[key];
+  if (!m) return null;
+  const origin = (html.match(/<link rel="canonical" href="(https?:\/\/[^"/]+)/) || [])[1] || '';
+  const url = `${origin}${key}`;
+  let out = html
+    .replace(/<title>[^<]*<\/title>/, `<title>${esc(m.title)}</title>`)
+    .replace(/(<meta name="description" content=")[^"]*"/, `$1${esc(m.desc)}"`)
+    .replace(/(<meta property="og:title" content=")[^"]*"/, `$1${esc(m.title)}"`)
+    .replace(/(<meta property="og:description" content=")[^"]*"/, `$1${esc(m.desc)}"`)
+    .replace(/(<meta property="og:url" content=")[^"]*"/, `$1${esc(url)}"`)
+    .replace(/(<meta name="twitter:title" content=")[^"]*"/, `$1${esc(m.title)}"`)
+    .replace(/(<meta name="twitter:description" content=")[^"]*"/, `$1${esc(m.desc)}"`)
+    .replace(/(<link rel="canonical" href=")[^"]*"/, `$1${esc(url)}"`);
+  if (m.noindex) out = out.replace('</head>', '    <meta name="robots" content="noindex" />\n  </head>');
+  return out;
+}

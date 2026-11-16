@@ -5,7 +5,7 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { HttpError, ORDER_STATUSES, BOOKING_STATUSES, clean, findOrderForTracking, normalizeOrderType, makeToken, normalizePhone, priceOrder, verifyToken, hashPassword, checkPassword, makeUserToken, verifyUserToken, parseIdentifier } from './lib.js';
+import { HttpError, ORDER_STATUSES, BOOKING_STATUSES, clean, findOrderForTracking, normalizeOrderType, makeToken, normalizePhone, priceOrder, verifyToken, hashPassword, checkPassword, makeUserToken, verifyUserToken, parseIdentifier, withPageMeta } from './lib.js';
 
 const PORT = process.env.PORT || 5000;
 // Hosting panels sometimes keep stray spaces or quotes around a pasted value: strip them.
@@ -310,7 +310,15 @@ app.delete('/api/admin/categories/:id', auth, ah(async (q, s) => {
 const dist = fileURLToPath(new URL('../client/dist', import.meta.url));
 if (fs.existsSync(dist)) {
   app.use(express.static(dist));
-  app.get(/^\/(?!api\/).*/, (_q, s) => s.sendFile(path.join(dist, 'index.html')));
+  const indexFile = path.join(dist, 'index.html');
+  app.get(/^\/(?!api\/).*/, (q, s) => {
+    // /checkout, /track, /book, /account get their own title + preview text (for WhatsApp etc.); the app then opens the right screen.
+    try {
+      const page = withPageMeta(fs.readFileSync(indexFile, 'utf8'), q.path);
+      if (page) return s.type('html').send(page);
+    } catch { /* fall back to the plain file */ }
+    s.sendFile(indexFile);
+  });
 }
 
 // ---------- Errors ----------
